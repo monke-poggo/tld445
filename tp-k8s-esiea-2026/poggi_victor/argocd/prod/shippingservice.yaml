@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-shippingservice
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://gitlab.esiea.fr/bastien.ceriani/k8s-gitops.git
+    targetRevision: main
+    path: tp-k8s-esiea-2026/poggi_victor/charts/online-boutique-service
+    helm:
+      valueFiles:
+        - ../../helm-values/prod/shippingservice.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: online-boutique-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

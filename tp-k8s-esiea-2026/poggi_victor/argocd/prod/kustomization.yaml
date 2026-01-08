@@ -1,0 +1,10 @@
+resources:
+  - frontend.yaml
+  - productcatalogservice.yaml
+  - cartservice.yaml
+  - checkoutservice.yaml
+  - currencyservice.yaml
+  - paymentservice.yaml
+  - recommendationservice.yaml
+  - shippingservice.yaml
+  - adservice.yaml

@@ -1,0 +1,32 @@
+replicaCount: 1
+
+image:
+  repository: gcr.io/google-samples/microservices-demo/paymentservice
+  tag: v0.4.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 50051
+  DISABLE_PROFILER value: "1"
+env:
+  PORT: "50051"
+
+resources:
+  limits:
+    cpu: "100m"
+    memory: "128Mi"
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+
+livenessProbe:
+  grpc:
+    port: 50051
+  initialDelaySeconds: 20
+  periodSeconds: 15
+
+readinessProbe:
+  grpc:
+    port: 50051
+  initialDelaySeconds: 20

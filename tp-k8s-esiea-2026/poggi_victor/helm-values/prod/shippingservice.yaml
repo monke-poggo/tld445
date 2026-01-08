@@ -1,0 +1,29 @@
+replicaCount: 2
+image:
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+  tag: stable
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 50051
+containerPort: 50051
+env:
+  - name: PORT
+    value: "50051"
+resources:
+  limits:
+    cpu: 300m
+    memory: 256Mi
+  requests:
+    cpu: 150m
+    memory: 128Mi
+readinessProbe:
+  grpc:
+    port: 50051
+  initialDelaySeconds: 5
+  periodSeconds: 10
+livenessProbe:
+  grpc:
+    port: 50051
+  initialDelaySeconds: 15
+  periodSeconds: 20

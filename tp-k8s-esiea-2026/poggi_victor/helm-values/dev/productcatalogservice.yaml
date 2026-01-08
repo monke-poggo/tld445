@@ -1,0 +1,35 @@
+replicaCount: 1
+
+image:
+  repository: gcr.io/google-samples/microservices-demo/productcatalogservice
+  tag: v0.3.3
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3550
+  DISABLE_PROFILER value: "1"
+env:
+  PORT: "3550"
+  DISABLE_PROFILER value: "1"
+  DISABLE_TRACING value: "1"
+  DISABLE_DEBUGGER value: "1"
+  GOOGLE_CLOUD_PROJECT value: ""
+resources:
+  limits:
+    cpu: "300m"
+    memory: "256Mi"
+  requests:
+    cpu: "150m"
+    memory: "128Mi"
+
+livenessProbe:
+  grpc:
+    port: 3550
+  initialDelaySeconds: 20
+  periodSeconds: 15
+
+readinessProbe:
+  grpc:
+    port: 3550
+  initialDelaySeconds: 20

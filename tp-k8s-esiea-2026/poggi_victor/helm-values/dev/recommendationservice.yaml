@@ -1,0 +1,33 @@
+replicaCount: 1
+
+image:
+  repository: gcr.io/google-samples/microservices-demo/recommendationservice
+  tag: v0.3.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+  DISABLE_PROFILER value: "1"
+env:
+  PORT: "8080"
+  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalog-online-boutique-service:3550"
+
+resources:
+  limits:
+    cpu: "300m"
+    memory: "256Mi"
+  requests:
+    cpu: "150m"
+    memory: "128Mi"
+
+livenessProbe:
+  grpc:
+    port: 8080
+  initialDelaySeconds: 20
+  periodSeconds: 15
+
+readinessProbe:
+  grpc:
+    port: 8080
+  initialDelaySeconds: 20

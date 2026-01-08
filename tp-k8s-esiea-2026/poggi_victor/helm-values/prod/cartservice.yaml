@@ -1,0 +1,29 @@
+replicaCount: 2
+image:
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+  tag: stable
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 7070
+containerPort: 7070
+env:
+  - name: REDIS_ADDR
+    value: redis:6379
+resources:
+  limits:
+    cpu: 300m
+    memory: 256Mi
+  requests:
+    cpu: 150m
+    memory: 128Mi
+readinessProbe:
+  grpc:
+    port: 7070
+  initialDelaySeconds: 5
+  periodSeconds: 10
+livenessProbe:
+  grpc:
+    port: 7070
+  initialDelaySeconds: 15
+  periodSeconds: 20

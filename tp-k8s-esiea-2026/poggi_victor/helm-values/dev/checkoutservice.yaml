@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  repository: gcr.io/google-samples/microservices-demo/checkoutservice
+  tag: v0.3.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5050
+  DISABLE_PROFILER value: "1"
+  DISABLE_TRACING value: "1"
+  DISABLE_DEBUGGER value: "1"
+  GOOGLE_CLOUD_PROJECT value: ""
+env:
+  PAYMENT_SERVICE_ADDR: "payment-online-boutique-service:50051"
+  SHIPPING_SERVICE_ADDR: "shipping-online-boutique-service:50051"
+  CART_SERVICE_ADDR: "cart-online-boutique-service:7070"
+
+resources:
+  limits:
+    cpu: "300m"
+    memory: "256Mi"
+  requests:
+    cpu: "150m"
+    memory: "128Mi"

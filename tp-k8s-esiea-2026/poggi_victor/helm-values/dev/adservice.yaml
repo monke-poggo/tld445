@@ -1,0 +1,36 @@
+replicaCount: 1
+
+image:
+  repository: gcr.io/google-samples/microservices-demo/adservice
+  tag: v0.2.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9555
+
+env:
+  PORT: "9555"
+  DISABLE_PROFILER value: "1"
+  DISABLE_TRACING value: "1"
+  DISABLE_DEBUGGER value: "1"
+  GOOGLE_CLOUD_PROJECT value: ""
+resources:
+  limits:
+    cpu: "200m"
+    memory: "128Mi"
+  requests:
+    cpu: "100m"
+    memory: "64Mi"
+
+livenessProbe:
+  grpc:
+    port: 9555
+  initialDelaySeconds: 20
+  periodSeconds: 15
+
+readinessProbe:
+  grpc:
+    port: 9555
+  initialDelaySeconds: 20
+  periodSeconds: 15

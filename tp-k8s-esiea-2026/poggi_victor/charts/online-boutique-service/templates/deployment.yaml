@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "online-boutique-service.fullname" . }}
+  labels:
+    app: {{ include "online-boutique-service.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "online-boutique-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "online-boutique-service.name" . }}
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: PORT
+              value: "{{ .Values.env.PORT }}"
+            - name: PRODUCT_CATALOG_SERVICE_ADDR
+              value: "{{ .Values.env.PRODUCT_CATALOG_SERVICE_ADDR }}"
+            - name: CURRENCY_SERVICE_ADDR
+              value: "{{ .Values.env.CURRENCY_SERVICE_ADDR }}"
+            - name: CART_SERVICE_ADDR
+              value: "{{ .Values.env.CART_SERVICE_ADDR }}"
+            - name: RECOMMENDATION_SERVICE_ADDR
+              value: "{{ .Values.env.RECOMMENDATION_SERVICE_ADDR }}"
+            - name: SHIPPING_SERVICE_ADDR
+              value: "{{ .Values.env.SHIPPING_SERVICE_ADDR }}"
+            - name: CHECKOUT_SERVICE_ADDR
+              value: "{{ .Values.env.CHECKOUT_SERVICE_ADDR }}"
+            - name: AD_SERVICE_ADDR
+              value: "{{ .Values.env.AD_SERVICE_ADDR }}"
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          readinessProbe:
+            httpGet:
+              path: /_healthz
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /_healthz
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
