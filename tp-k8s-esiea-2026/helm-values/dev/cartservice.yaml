@@ -8,10 +8,8 @@ image:
 service:
   type: ClusterIP
   port: 7070
-  DISABLE_PROFILER value: "1"
-  DISABLE_TRACING value: "1"
-  DISABLE_DEBUGGER value: "1"
-  GOOGLE_CLOUD_PROJECT value: ""
+env:
+  DISABLE_PROFILER: "1"
 resources:
   limits:
     cpu: "300m"

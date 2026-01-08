@@ -8,13 +8,10 @@ image:
 service:
   type: ClusterIP
   port: 3550
-  DISABLE_PROFILER value: "1"
+
 env:
   PORT: "3550"
-  DISABLE_PROFILER value: "1"
-  DISABLE_TRACING value: "1"
-  DISABLE_DEBUGGER value: "1"
-  GOOGLE_CLOUD_PROJECT value: ""
+  DISABLE_PROFILER: "1"
 resources:
   limits:
     cpu: "300m"

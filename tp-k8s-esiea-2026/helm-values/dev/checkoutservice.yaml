@@ -8,11 +8,9 @@ image:
 service:
   type: ClusterIP
   port: 5050
-  DISABLE_PROFILER value: "1"
-  DISABLE_TRACING value: "1"
-  DISABLE_DEBUGGER value: "1"
-  GOOGLE_CLOUD_PROJECT value: ""
+
 env:
+  DISABLE_PROFILER: "1"
   PAYMENT_SERVICE_ADDR: "payment-online-boutique-service:50051"
   SHIPPING_SERVICE_ADDR: "shipping-online-boutique-service:50051"
   CART_SERVICE_ADDR: "cart-online-boutique-service:7070"

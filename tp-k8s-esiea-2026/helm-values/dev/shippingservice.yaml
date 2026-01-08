@@ -8,10 +8,10 @@ image:
 service:
   type: ClusterIP
   port: 50051
-  DISABLE_PROFILER value: "1"
+
 env:
   PORT: "50051"
-
+  DISABLE_PROFILER: "1"
 resources:
   limits:
     cpu: "200m"

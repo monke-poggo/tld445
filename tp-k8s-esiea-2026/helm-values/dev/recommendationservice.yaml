@@ -8,11 +8,11 @@ image:
 service:
   type: ClusterIP
   port: 8080
-  DISABLE_PROFILER value: "1"
+  
 env:
   PORT: "8080"
   PRODUCT_CATALOG_SERVICE_ADDR: "productcatalog-online-boutique-service:3550"
-
+  DISABLE_PROFILER: "1"
 resources:
   limits:
     cpu: "300m"

@@ -8,10 +8,10 @@ image:
 service:
   type: ClusterIP
   port: 5000
-  DISABLE_PROFILER value: "1"
+  
 env:
   PORT: "5000"
-
+  DISABLE_PROFILER: "1"
 resources:
   limits:
     cpu: "100m"

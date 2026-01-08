@@ -11,10 +11,7 @@ service:
 
 env:
   PORT: "7000"
-  DISABLE_PROFILER value: "1"
-  DISABLE_TRACING value: "1"
-  DISABLE_DEBUGGER value: "1"
-  GOOGLE_CLOUD_PROJECT value: ""
+  DISABLE_PROFILER: "1"
 
 
 resources:
