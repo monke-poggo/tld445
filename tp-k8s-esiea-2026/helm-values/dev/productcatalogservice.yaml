@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/google-samples/microservices-demo/productcatalogservice
+  repository: us-docker.pkg.dev/google-samples/containers/gke/microservices-demo/productcatalogservice:v0.2.0
   tag: v0.3.3
   pullPolicy: IfNotPresent
 

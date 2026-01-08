@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/google-samples/microservices-demo/currencyservice
+  repository: us-docker.pkg.dev/google-samples/containers/gke/microservices-demo/currencyservice:v0.2.0
   tag: v0.2.0
   pullPolicy: IfNotPresent
 
