@@ -19,7 +19,9 @@ env:
   SHIPPING_SERVICE_ADDR: "shipping-online-boutique-service:50051"
   CHECKOUT_SERVICE_ADDR: "checkout-online-boutique-service:5050"
   AD_SERVICE_ADDR: "ad-online-boutique-service:9555"
+  SHOPPING_ASSISTANT_SERVICE_ADDR: "shopping-assistant-online-boutique-service:6060"  # <--- add this
   DISABLE_PROFILER: "1"
+
 
 resources:
   limits:
