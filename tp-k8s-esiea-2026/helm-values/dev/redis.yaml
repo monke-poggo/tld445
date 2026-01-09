@@ -1,19 +1,36 @@
-apiVersion: apps/v1
-kind: Deployment
+---
+apiVersion: v1
+kind: Service
 metadata:
-  name: dev-redis-online-boutique
+  name: redis
   namespace: online-boutique-dev
   labels:
-    app: dev-redis-online-boutique
+    app: redis
 spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  namespace: online-boutique-dev
+  labels:
+    app: redis
+spec:
+  serviceName: "redis"
   replicas: 1
   selector:
     matchLabels:
-      app: dev-redis-online-boutique
+      app: redis
   template:
     metadata:
       labels:
-        app: dev-redis-online-boutique
+        app: redis
     spec:
       containers:
         - name: redis
@@ -21,6 +38,9 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
           resources:
             limits:
               cpu: 200m
@@ -28,16 +48,36 @@ spec:
             requests:
               cpu: 100m
               memory: 128Mi
+          # Pas de probes gRPC, Redis est en TCP
 ---
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: dev-redis-online-boutique
+  name: redis-data
   namespace: online-boutique-dev
 spec:
-  type: ClusterIP
-  ports:
-    - port: 6379
-      targetPort: 6379
-  selector:
-    app: dev-redis-online-boutique
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-access
+  namespace: online-boutique-dev
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: cartservice
+      ports:
+        - protocol: TCP
+          port: 6379
