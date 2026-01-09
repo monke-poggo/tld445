@@ -3,7 +3,7 @@ name: currencyservice
 
 image:
   repository: gcr.io/google-samples/microservices-demo/currencyservice
-  tag: v0.8.0
+  tag: v0.10.3
   pullPolicy: IfNotPresent
 
 service:
