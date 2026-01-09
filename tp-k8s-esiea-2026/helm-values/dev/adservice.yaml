@@ -1,33 +1,26 @@
 replicaCount: 1
 
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
-  tag: v0.3.4
-
+  repository: gcr.io/google-samples/microservices-demo/adservice
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 9555
 
-containerPort: 9555
-
 env:
-  PORT: "9555"
-
-  # 🔕 Désactivation complète Google Cloud
   DISABLE_PROFILER: "1"
   DISABLE_TRACING: "1"
   DISABLE_DEBUGGER: "1"
-  GOOGLE_CLOUD_PROJECT: ""
 
 resources:
-  requests:
-    cpu: "100m"
-    memory: "64Mi"
   limits:
     cpu: "200m"
     memory: "128Mi"
+  requests:
+    cpu: "100m"
+    memory: "64Mi"
 
 livenessProbe:
   grpc:
