@@ -1,7 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: us-docker.pkg.dev/google-samples/containers/gke/microservices-demo/checkoutservice:v0.2.0
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.1
+
   tag: v0.3.0
   pullPolicy: IfNotPresent
 
