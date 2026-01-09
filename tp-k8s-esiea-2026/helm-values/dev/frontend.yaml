@@ -20,6 +20,7 @@ env:
   CHECKOUT_SERVICE_ADDR: "checkout-online-boutique-service:5050"
   AD_SERVICE_ADDR: "ad-online-boutique-service:9555"
   EMAIL_SERVICE_ADDR: "email-online-boutique-service:2500"
+  SHOPPING_ASSISTANT_SERVICE_ADDR: "shopping-assistant-online-boutique-service:6060"
   DISABLE_PROFILER: "1"
 
 resources:

@@ -1,17 +1,18 @@
 replicaCount: 1
 
-name: emailservice
+name: shoppingassistantservice
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
   tag: v0.10.4
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  port: 2500
+  port: 6060
 
 env:
-  PORT: "2500"
+  PORT: "6060"
+  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalog-online-boutique-service:3550"
   DISABLE_PROFILER: "1"
 
 resources:
@@ -24,7 +25,7 @@ resources:
 
 livenessProbe:
   grpc:
-    port: 2500
+    port: 6060
   initialDelaySeconds: 15
   periodSeconds: 20
   timeoutSeconds: 5
@@ -32,7 +33,7 @@ livenessProbe:
 
 readinessProbe:
   grpc:
-    port: 2500
+    port: 6060
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
