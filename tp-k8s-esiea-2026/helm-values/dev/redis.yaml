@@ -48,7 +48,6 @@ spec:
             requests:
               cpu: 100m
               memory: 128Mi
-          # Pas de probes gRPC, Redis est en TCP
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
