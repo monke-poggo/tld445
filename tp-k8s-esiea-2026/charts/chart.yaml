@@ -1,6 +1,17 @@
 apiVersion: v2
 name: online-boutique-service
-description: A Helm chart for Online Boutique microservices
+description: A Helm chart for Online Boutique microservices deployment
 type: application
 version: 0.1.0
-appVersion: "1.0"
+appVersion: "v0.10.4"
+keywords:
+  - microservices
+  - e-commerce
+  - kubernetes
+  - online-boutique
+home: https://github.com/GoogleCloudPlatform/microservices-demo
+sources:
+  - https://github.com/GoogleCloudPlatform/microservices-demo
+maintainers:
+  - name: ESIEA Student
+    email: student@esiea.fr

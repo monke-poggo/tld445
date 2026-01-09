@@ -57,5 +57,16 @@ fullnameOverride: "redis"
 networkPolicy:
   enabled: true
   allowedPods:
-    - app.kubernetes.io/name: online-boutique-service
+    - app.kubernetes.io/name: cartservice
       app.kubernetes.io/instance: cartservice
+
+serviceAccount:
+  create: true
+  name: "redis"
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["persistentvolumeclaims", "persistentvolumes"]
+      verbs: ["get", "list", "watch"]

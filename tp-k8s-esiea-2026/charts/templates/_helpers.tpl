@@ -2,7 +2,11 @@
 Expand the name of the chart.
 */}}
 {{- define "online-boutique-service.name" -}}
+{{- if .Values.name }}
+{{- .Values.name }}
+{{- else }}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -11,6 +15,8 @@ Create a default fully qualified app name.
 {{- define "online-boutique-service.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else if .Values.name }}
+{{- printf "%s-online-boutique-service" .Values.name | trunc 63 | trimSuffix "-" }}
 {{- else }}
 {{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
@@ -18,6 +24,17 @@ Create a default fully qualified app name.
 {{- else }}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "online-boutique-service.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "online-boutique-service.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
 
@@ -38,6 +55,7 @@ helm.sh/chart: {{ include "online-boutique-service.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/component: {{ .Values.name | default "service" }}
 {{- end }}
 
 {{/*

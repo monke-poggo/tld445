@@ -5,6 +5,7 @@ image:
   repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
   tag: v0.10.4
   pullPolicy: IfNotPresent
+
 service:
   type: ClusterIP
   port: 9555
@@ -14,8 +15,6 @@ env:
   DISABLE_PROFILER: "1"
   DISABLE_TRACING: "1"
   DISABLE_DEBUGGER: "1"
-  GCLOUD_PROJECT: ""
-
 
 resources:
   limits:
@@ -25,14 +24,18 @@ resources:
     cpu: "100m"
     memory: "64Mi"
 
-# livenessProbe:
-#   grpc:
-#     port: 9555
-#   initialDelaySeconds: 20
-#   periodSeconds: 15
+livenessProbe:
+  grpc:
+    port: 9555
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
 
-# readinessProbe:
-#   grpc:
-#     port: 9555
-#   initialDelaySeconds: 20
-#   periodSeconds: 15
+readinessProbe:
+  grpc:
+    port: 9555
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3

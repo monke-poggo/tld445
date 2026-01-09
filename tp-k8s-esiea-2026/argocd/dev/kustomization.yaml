@@ -11,4 +11,5 @@ resources:
   - shippingservice.yaml
   - paymentservice.yaml
   - adservice.yaml
+  - emailservice.yaml
   - redis.yaml

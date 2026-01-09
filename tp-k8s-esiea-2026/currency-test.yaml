@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: currencyservice-test
+  namespace: online-boutique-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: currencyservice-test
+  template:
+    metadata:
+      labels:
+        app: currencyservice-test
+    spec:
+      containers:
+      - name: currencyservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.4
+        ports:
+        - containerPort: 7000
+        env:
+        - name: PORT
+          value: "7000"
+        - name: DISABLE_PROFILER
+          value: "1"
+        - name: DISABLE_TRACING
+          value: "1"
+        - name: DISABLE_DEBUGGER
+          value: "1"
+        # Pas de probes pour l'instant
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: currencyservice-test-service
+  namespace: online-boutique-dev
+spec:
+  selector:
+    app: currencyservice-test
+  ports:
+  - port: 7000
+    targetPort: 7000

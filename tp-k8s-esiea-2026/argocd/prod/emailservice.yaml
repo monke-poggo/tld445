@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-checkoutservice
+  name: prod-emailservice
   namespace: argocd
 spec:
   project: default
@@ -11,10 +11,10 @@ spec:
     path: tp-k8s-esiea-2026/charts/online-boutique-service
     helm:
       valueFiles:
-        - ../../helm-values/dev/checkoutservice.yaml
+        - ../../helm-values/prod/emailservice.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: online-boutique-dev
+    namespace: online-boutique-prod
   syncPolicy:
     automated:
       prune: true

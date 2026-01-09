@@ -1,29 +1,41 @@
 replicaCount: 2
+
+name: paymentservice
 image:
   repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
-  tag: stable
+  tag: v0.10.4
   pullPolicy: IfNotPresent
+
 service:
   type: ClusterIP
   port: 50051
-containerPort: 50051
+
 env:
-  - name: PORT
-    value: "50051"
+  PORT: "50051"
+  DISABLE_PROFILER: "1"
+  DISABLE_TRACING: "1"
+  DISABLE_DEBUGGER: "1"
+
 resources:
   limits:
-    cpu: 300m
-    memory: 256Mi
+    cpu: 500m
+    memory: 512Mi
   requests:
-    cpu: 150m
-    memory: 128Mi
+    cpu: 250m
+    memory: 256Mi
+
+livenessProbe:
+  grpc:
+    port: 50051
+  initialDelaySeconds: 15
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
 readinessProbe:
   grpc:
     port: 50051
   initialDelaySeconds: 5
   periodSeconds: 10
-livenessProbe:
-  grpc:
-    port: 50051
-  initialDelaySeconds: 15
-  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3

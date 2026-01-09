@@ -27,9 +27,13 @@ livenessProbe:
     port: 50051
   initialDelaySeconds: 20
   periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
 
 readinessProbe:
   grpc:
     port: 50051
   initialDelaySeconds: 10
   periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3

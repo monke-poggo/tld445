@@ -8,10 +8,10 @@ image:
 
 service:
   type: ClusterIP
-  port: 5050
+  port: 50051
 
 env:
-  PORT: "5050"
+  PORT: "50051"
   DISABLE_PROFILER: "1"
   DISABLE_TRACING: "1"
   DISABLE_DEBUGGER: "1"
@@ -26,7 +26,7 @@ resources:
 
 livenessProbe:
   grpc:
-    port: 5050
+    port: 50051
   initialDelaySeconds: 15
   periodSeconds: 15
   timeoutSeconds: 5
@@ -34,7 +34,7 @@ livenessProbe:
 
 readinessProbe:
   grpc:
-    port: 5050
+    port: 50051
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5

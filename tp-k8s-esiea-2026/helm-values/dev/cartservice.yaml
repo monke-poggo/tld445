@@ -38,3 +38,15 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
+
+serviceAccount:
+  create: true
+  name: "cartservice"
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["services", "endpoints"]
+      verbs: ["get", "list"]
+      resourceNames: ["redis-online-boutique-service"]

@@ -1,17 +1,17 @@
 replicaCount: 2
 
-name: currencyservice
+name: emailservice
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
   tag: v0.10.4
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  port: 7000
+  port: 5000
 
 env:
-  PORT: "7000"
+  PORT: "5000"
   DISABLE_PROFILER: "1"
 
 resources:
@@ -24,15 +24,15 @@ resources:
 
 livenessProbe:
   grpc:
-    port: 7000
+    port: 5000
   initialDelaySeconds: 15
-  periodSeconds: 15
+  periodSeconds: 20
   timeoutSeconds: 5
   failureThreshold: 3
 
 readinessProbe:
   grpc:
-    port: 7000
+    port: 5000
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5

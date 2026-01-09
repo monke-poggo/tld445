@@ -12,10 +12,10 @@ service:
 
 env:
   PORT: "8080"
+  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice-online-boutique-service:3550"
   DISABLE_PROFILER: "1"
   DISABLE_TRACING: "1"
   DISABLE_DEBUGGER: "1"
-  GCLOUD_PROJECT: ""
 
 resources:
   limits:
@@ -25,16 +25,18 @@ resources:
     cpu: "150m"
     memory: "128Mi"
 
-# livenessProbe:
-#   httpGet:
-#     path: /health
-#     port: 8080
-#   initialDelaySeconds: 15
-#   periodSeconds: 15
+livenessProbe:
+  grpc:
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
 
-# readinessProbe:
-#   httpGet:
-#     path: /health
-#     port: 8080
-#   initialDelaySeconds: 5
-#   periodSeconds: 10
+readinessProbe:
+  grpc:
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3

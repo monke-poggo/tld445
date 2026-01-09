@@ -8,10 +8,10 @@ image:
 
 service:
   type: ClusterIP
-  port: 2500
+  port: 5000
 
 env:
-  PORT: "2500"
+  PORT: "5000"
   DISABLE_PROFILER: "1"
 
 resources:
@@ -24,7 +24,7 @@ resources:
 
 livenessProbe:
   grpc:
-    port: 2500
+    port: 5000
   initialDelaySeconds: 15
   periodSeconds: 20
   timeoutSeconds: 5
@@ -32,7 +32,7 @@ livenessProbe:
 
 readinessProbe:
   grpc:
-    port: 2500
+    port: 5000
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5

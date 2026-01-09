@@ -8,3 +8,5 @@ resources:
   - recommendationservice.yaml
   - shippingservice.yaml
   - adservice.yaml
+  - emailservice.yaml
+  - redis.yaml

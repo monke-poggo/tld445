@@ -1,29 +1,39 @@
 replicaCount: 2
+
+name: productcatalogservice
 image:
   repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
-  tag: stable
+  tag: v0.10.4
   pullPolicy: IfNotPresent
+
 service:
   type: ClusterIP
   port: 3550
-containerPort: 3550
+
 env:
-  - name: PORT
-    value: "3550"
+  PORT: "3550"
+  DISABLE_PROFILER: "1"
+
 resources:
   limits:
-    cpu: 300m
-    memory: 256Mi
+    cpu: 500m
+    memory: 512Mi
   requests:
-    cpu: 150m
-    memory: 128Mi
+    cpu: 250m
+    memory: 256Mi
+
+livenessProbe:
+  grpc:
+    port: 3550
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
 readinessProbe:
   grpc:
     port: 3550
   initialDelaySeconds: 5
   periodSeconds: 10
-livenessProbe:
-  grpc:
-    port: 3550
-  initialDelaySeconds: 15
-  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3

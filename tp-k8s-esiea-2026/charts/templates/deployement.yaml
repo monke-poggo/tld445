@@ -15,6 +15,9 @@ spec:
       labels:
         {{- include "online-boutique-service.selectorLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "online-boutique-service.serviceAccountName" . }}
+      {{- end }}
       containers:
         - name: {{ include "online-boutique-service.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
