@@ -1,36 +1,35 @@
-{{- $fullName := include "online-boutique-service.fullname" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $fullName }}
-  namespace: {{ .Release.Namespace }}
+  name: frontend-online-boutique-service
+  namespace: online-boutique-dev
   labels:
-    app: {{ .Chart.Name }}
+    app: frontend
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app: frontend
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
+        app: frontend
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: frontend
+          image: gcr.io/google-samples/microservices-demo/frontend:v0.8.0
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: 8080
           env:
             - name: PORT
-              value: "7000"
-            - name: CART_SERVICE_ADDR
-              value: "cart-online-boutique-service:7070"
+              value: "8080"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
               value: "productcatalog-online-boutique-service:3550"
-            - name: PAYMENT_SERVICE_ADDR
-              value: "payment-online-boutique-service:5050"
+            - name: CURRENCY_SERVICE_ADDR
+              value: "currency-online-boutique-service:7000"
+            - name: CART_SERVICE_ADDR
+              value: "cart-online-boutique-service:7070"
             - name: RECOMMENDATION_SERVICE_ADDR
               value: "recommendation-online-boutique-service:8080"
             - name: SHIPPING_SERVICE_ADDR
@@ -41,38 +40,41 @@ spec:
               value: "ad-online-boutique-service:9555"
             - name: EMAIL_SERVICE_ADDR
               value: "email-online-boutique-service:2500"
-            - name: CURRENCY_SERVICE_ADDR
-              value: "currency-online-boutique-service:7000"
+            - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+              value: "shopping-assistant-online-boutique-service:6060"
             - name: DISABLE_PROFILER
               value: "1"
-
           resources:
             limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
+              cpu: "500m"
+              memory: "256Mi"
             requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
+              cpu: "250m"
+              memory: "128Mi"
           livenessProbe:
-            grpc:
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 20
-            periodSeconds: 15
+            httpGet:
+              path: /_healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
           readinessProbe:
-            grpc:
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
+            httpGet:
+              path: /_healthz
+              port: 8080
+            initialDelaySeconds: 5
             periodSeconds: 10
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $fullName }}
-  namespace: {{ .Release.Namespace }}
+  name: frontend-online-boutique-service
+  namespace: online-boutique-dev
 spec:
   type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+    - port: 222          # exposé sur le port 222
+      targetPort: 8080
+      protocol: TCP
   selector:
-    app: {{ .Chart.Name }}
+    app: frontend
