@@ -22,6 +22,8 @@ spec:
           ports:
             - containerPort: 7000
           env:
+            - name: PORT
+              value: "7000"                # ← indispensable pour que le service démarre sur le bon port
             - name: DISABLE_PROFILER
               value: "1"
             - name: CART_SERVICE_ADDR
