@@ -8,7 +8,7 @@ image:
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 8080  # reste le port interne du service dans le cluster
 
 env:
   PORT: "8080"
@@ -19,7 +19,6 @@ env:
   SHIPPING_SERVICE_ADDR: "shipping-online-boutique-service:50051"
   CHECKOUT_SERVICE_ADDR: "checkout-online-boutique-service:5050"
   AD_SERVICE_ADDR: "ad-online-boutique-service:9555"
-  EMAIL_SERVICE_ADDR: "email-online-boutique-service:2500"
   DISABLE_PROFILER: "1"
 
 resources:
@@ -36,8 +35,6 @@ livenessProbe:
     port: 8080
   initialDelaySeconds: 15
   periodSeconds: 20
-  timeoutSeconds: 5
-  failureThreshold: 3
 
 readinessProbe:
   httpGet:
@@ -45,5 +42,15 @@ readinessProbe:
     port: 8080
   initialDelaySeconds: 5
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 222  
