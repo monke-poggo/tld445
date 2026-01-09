@@ -8,20 +8,19 @@ image:
 
 service:
   type: ClusterIP
-  port: 8080  # reste le port interne du service dans le cluster
+  port: 8080  # port interne du service dans le cluster
 
 env:
   PORT: "8080"
-  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalog-online-boutique-service:3550"
-  CURRENCY_SERVICE_ADDR: "currency-online-boutique-service:7000"
-  CART_SERVICE_ADDR: "cart-online-boutique-service:7070"
-  RECOMMENDATION_SERVICE_ADDR: "recommendation-online-boutique-service:8080"
-  SHIPPING_SERVICE_ADDR: "shipping-online-boutique-service:50051"
-  CHECKOUT_SERVICE_ADDR: "checkout-online-boutique-service:5050"
-  AD_SERVICE_ADDR: "ad-online-boutique-service:9555"
-  SHOPPING_ASSISTANT_SERVICE_ADDR: "shopping-assistant-online-boutique-service:6060"  # <--- add this
+  PRODUCT_CATALOG_SERVICE_ADDR: "dev-productcatalogservice-online-boutique-service:80"
+  CURRENCY_SERVICE_ADDR: "dev-currencyservice-online-boutique-service:80"
+  CART_SERVICE_ADDR: "dev-cartservice-online-boutique-service:7070"
+  RECOMMENDATION_SERVICE_ADDR: "dev-recommendationservice-online-boutique-service:8080"
+  SHIPPING_SERVICE_ADDR: "dev-shippingservice-online-boutique-service:50051"
+  CHECKOUT_SERVICE_ADDR: "dev-checkoutservice-online-boutique-service:80"
+  AD_SERVICE_ADDR: "dev-adservice-online-boutique-service:9555"
+  SHOPPING_ASSISTANT_SERVICE_ADDR: "dev-shoppingassistantservice-online-boutique-service:6060"
   DISABLE_PROFILER: "1"
-
 
 resources:
   limits:
@@ -55,4 +54,4 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-          port: 222  
+          port: 8080
