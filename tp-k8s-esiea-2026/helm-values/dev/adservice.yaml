@@ -1,8 +1,9 @@
 replicaCount: 1
+
 name: adservice
 image:
   repository: gcr.io/google-samples/microservices-demo/adservice
-  tag: v0.8.0
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 service:
@@ -10,9 +11,8 @@ service:
   port: 9555
 
 env:
+  PORT: "9555"
   DISABLE_PROFILER: "1"
-  DISABLE_TRACING: "1"
-  DISABLE_DEBUGGER: "1"
 
 resources:
   limits:

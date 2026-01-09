@@ -1,8 +1,9 @@
 replicaCount: 1
 
+name: shippingservice
 image:
-  repository: us-docker.pkg.dev/google-samples/containers/gke/microservices-demo/shippingservice:v0.2.0
-  tag: v0.3.0
+  repository: gcr.io/google-samples/microservices-demo/shippingservice
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 service:
@@ -12,21 +13,25 @@ service:
 env:
   PORT: "50051"
   DISABLE_PROFILER: "1"
+
 resources:
   limits:
-    cpu: "200m"
-    memory: "128Mi"
+    cpu: "300m"
+    memory: "256Mi"
   requests:
-    cpu: "100m"
-    memory: "64Mi"
+    cpu: "150m"
+    memory: "128Mi"
 
 livenessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 50051
-  initialDelaySeconds: 20
+  initialDelaySeconds: 15
   periodSeconds: 15
 
 readinessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 50051
-  initialDelaySeconds: 20
+  initialDelaySeconds: 5
+  periodSeconds: 10

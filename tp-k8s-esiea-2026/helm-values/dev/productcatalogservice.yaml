@@ -1,8 +1,9 @@
 replicaCount: 1
 
+name: productcatalogservice
 image:
-  repository: us-docker.pkg.dev/google-samples/containers/gke/microservices-demo/productcatalogservice:v0.2.0
-  tag: v0.3.3
+  repository: gcr.io/google-samples/microservices-demo/productcatalogservice
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 service:
@@ -12,6 +13,7 @@ service:
 env:
   PORT: "3550"
   DISABLE_PROFILER: "1"
+
 resources:
   limits:
     cpu: "300m"
@@ -21,12 +23,15 @@ resources:
     memory: "128Mi"
 
 livenessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 3550
-  initialDelaySeconds: 20
+  initialDelaySeconds: 10
   periodSeconds: 15
 
 readinessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 3550
-  initialDelaySeconds: 20
+  initialDelaySeconds: 5
+  periodSeconds: 10

@@ -3,37 +3,35 @@ replicaCount: 1
 name: cartservice
 image:
   repository: gcr.io/google-samples/microservices-demo/cartservice
-  tag: v0.8.0
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 7070
 
-containerPort: 7070
-
 env:
+  PORT: "7070"
   DISABLE_PROFILER: "1"
-  DISABLE_TRACING: "1"
-  DISABLE_DEBUGGER: "1"
-  GOOGLE_CLOUD_PROJECT: ""
 
 resources:
-  requests:
-    cpu: "150m"
-    memory: "128Mi"
   limits:
     cpu: "300m"
     memory: "256Mi"
+  requests:
+    cpu: "150m"
+    memory: "128Mi"
 
 livenessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 7070
-  initialDelaySeconds: 20
+  initialDelaySeconds: 15
   periodSeconds: 15
 
 readinessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 7070
-  initialDelaySeconds: 20
-  periodSeconds: 15
+  initialDelaySeconds: 5
+  periodSeconds: 10

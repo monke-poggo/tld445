@@ -1,8 +1,9 @@
 replicaCount: 1
 
+name: currencyservice
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
-  tag: v0.2.0
+  repository: gcr.io/google-samples/microservices-demo/currencyservice
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 service:
@@ -13,7 +14,6 @@ env:
   PORT: "7000"
   DISABLE_PROFILER: "1"
 
-
 resources:
   limits:
     cpu: "200m"
@@ -23,12 +23,15 @@ resources:
     memory: "64Mi"
 
 livenessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 7000
-  initialDelaySeconds: 20
+  initialDelaySeconds: 10
   periodSeconds: 15
 
 readinessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 7000
-  initialDelaySeconds: 20
+  initialDelaySeconds: 5
+  periodSeconds: 10

@@ -1,18 +1,19 @@
 replicaCount: 1
 
+name: recommendationservice
 image:
-  repository: us-docker.pkg.dev/google-samples/containers/gke/microservices-demo/recommendationservice:v0.2.0
-  tag: v0.3.0
+  repository: gcr.io/google-samples/microservices-demo/recommendationservice
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 8080
-  
+
 env:
   PORT: "8080"
-  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalog-online-boutique-service:3550"
   DISABLE_PROFILER: "1"
+
 resources:
   limits:
     cpu: "300m"
@@ -22,12 +23,15 @@ resources:
     memory: "128Mi"
 
 livenessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 8080
-  initialDelaySeconds: 20
+  initialDelaySeconds: 15
   periodSeconds: 15
 
 readinessProbe:
-  grpc:
+  httpGet:
+    path: /health
     port: 8080
-  initialDelaySeconds: 20
+  initialDelaySeconds: 5
+  periodSeconds: 10
