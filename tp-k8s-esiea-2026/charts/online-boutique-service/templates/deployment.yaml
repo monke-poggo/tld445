@@ -20,11 +20,16 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           ports:
             - containerPort: {{ .Values.service.port }}
+
           env:
             - name: PORT
-              value: "7000"
+              value: "{{ .Values.service.port }}"
+            - name: DISABLE_PROFILER
+              value: "1"
+
             - name: CART_SERVICE_ADDR
               value: "cart-online-boutique-service:7070"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
@@ -43,8 +48,6 @@ spec:
               value: "email-online-boutique-service:2500"
             - name: CURRENCY_SERVICE_ADDR
               value: "currency-online-boutique-service:7000"
-            - name: DISABLE_PROFILER
-              value: "1"
 
           resources:
             limits:
@@ -53,11 +56,13 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
+
           livenessProbe:
             grpc:
               port: {{ .Values.service.port }}
             initialDelaySeconds: 20
             periodSeconds: 15
+
           readinessProbe:
             grpc:
               port: {{ .Values.service.port }}
