@@ -1,41 +1,65 @@
-replicaCount: 1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-currencyservice-online-boutique-service
+  namespace: online-boutique-dev
+  labels:
+    app: currency
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: currency
+  template:
+    metadata:
+      labels:
+        app: currency
+    spec:
+      containers:
+      - name: currencyservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.4
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: PORT
+            value: "7000"
+          - name: DISABLE_PROFILER
+            value: "1"
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+        ports:
+          - containerPort: 7000
+        livenessProbe:
+          grpc:
+            port: 7000
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          grpc:
+            port: 7000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
 
-name: currencyservice
-image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
-  tag: v0.10.4
-  pullPolicy: IfNotPresent
+---
 
-service:
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-currencyservice-online-boutique-service
+  namespace: online-boutique-dev
+spec:
   type: ClusterIP
-  port: 7000
-
-env:
-  PORT: "7000"
-  DISABLE_PROFILER: "1"
-
-resources:
-  limits:
-    cpu: "200m"
-    memory: "128Mi"
-  requests:
-    cpu: "100m"
-    memory: "64Mi"
-
-livenessProbe:
-  grpc:
-    port: 7000
-  initialDelaySeconds: 15
-  periodSeconds: 15
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-readinessProbe:
-  grpc:
-    port: 7000
-  initialDelaySeconds: 5
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-
+  selector:
+    app: currency
+  ports:
+    - protocol: TCP
+      port: 7000
+      targetPort: 7000
