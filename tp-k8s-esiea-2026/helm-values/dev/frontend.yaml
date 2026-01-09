@@ -53,4 +53,4 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-          port: 222   # <-- Expose l'ingress sur le port 222
+          port: 222  
