@@ -15,14 +15,19 @@ spec:
         app: {{ include "online-boutique-service.name" . }}
     spec:
       containers:
-        - name: frontend
+        - name: {{ .Chart.Name }}
+          # Image corrigée pour être compatible avec les nouveaux dépôts
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: {{ .Values.service.port }}
           env:
             - name: PORT
               value: "{{ .Values.env.PORT }}"
-            - name:   DISABLE_PROFILER
+            - name: DISABLE_PROFILER
+              value: "1"
+            - name: DISABLE_DEBUGGER
+              value: "1"
+            - name: DISABLE_TRACING
               value: "1"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
               value: "{{ .Values.env.PRODUCT_CATALOG_SERVICE_ADDR }}"
