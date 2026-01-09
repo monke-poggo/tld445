@@ -1,38 +1,24 @@
-replicaCount: 1
-
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
-  tag: v0.3.8
+  repository: gcr.io/google-samples/microservices-demo/cartservice
+  tag: v0.8.0
   pullPolicy: IfNotPresent
 
-service:
-  type: ClusterIP
-  port: 7070
-
-containerPort: 7070
-
 env:
-  DISABLE_PROFILER: "1"
-  DISABLE_TRACING: "1"
-  DISABLE_DEBUGGER: "1"
-  GOOGLE_CLOUD_PROJECT: ""
+  - name: REDIS_ADDR
+    value: "redis.online-boutique-dev.svc.cluster.local:6379"
+    # ⚠️ Adapter le namespace (dev/prod) dans l'URL
 
-resources:
-  requests:
-    cpu: "150m"
-    memory: "128Mi"
-  limits:
-    cpu: "300m"
-    memory: "256Mi"
+probes:
+  readiness:
+    enabled: true
+    initialDelaySeconds: 60  # ⚠️ Ne pas mettre trop bas!
 
-livenessProbe:
-  grpc:
-    port: 7070
-  initialDelaySeconds: 20
-  periodSeconds: 15
+labels:
+  app: cartservice  # ⚠️ Doit correspondre au label dans Redis network policy
 
-readinessProbe:
-  grpc:
-    port: 7070
-  initialDelaySeconds: 20
-  periodSeconds: 15
+service:
+  port: 7070
+  targetPort: 7070
+
+networkPolicy:
+  enabled: true
