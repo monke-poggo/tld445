@@ -25,14 +25,14 @@ resources:
     cpu: "100m"
     memory: "64Mi"
 
-livenessProbe:
-  grpc:
-    port: 9555
-  initialDelaySeconds: 20
-  periodSeconds: 15
+# livenessProbe:
+#   grpc:
+#     port: 9555
+#   initialDelaySeconds: 20
+#   periodSeconds: 15
 
-readinessProbe:
-  grpc:
-    port: 9555
-  initialDelaySeconds: 20
-  periodSeconds: 15
+# readinessProbe:
+#   grpc:
+#     port: 9555
+#   initialDelaySeconds: 20
+#   periodSeconds: 15

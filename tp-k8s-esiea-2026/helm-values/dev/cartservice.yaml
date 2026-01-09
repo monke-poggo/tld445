@@ -21,16 +21,16 @@ resources:
     cpu: "150m"
     memory: "128Mi"
 
-livenessProbe:
-  httpGet:
-    path: /health
-    port: 7070
-  initialDelaySeconds: 15
-  periodSeconds: 15
+# livenessProbe:
+#   httpGet:
+#     path: /health
+#     port: 7070
+#   initialDelaySeconds: 15
+#   periodSeconds: 15
 
-readinessProbe:
-  httpGet:
-    path: /health
-    port: 7070
-  initialDelaySeconds: 5
-  periodSeconds: 10
+# readinessProbe:
+#   httpGet:
+#     path: /health
+#     port: 7070
+#   initialDelaySeconds: 5
+#   periodSeconds: 10

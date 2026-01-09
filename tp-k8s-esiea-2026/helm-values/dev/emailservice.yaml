@@ -28,16 +28,16 @@ resources:
     cpu: "100m"
     memory: "64Mi"
 
-livenessProbe:
-  httpGet:
-    path: /_healthz
-    port: 6000
-  initialDelaySeconds: 15
-  periodSeconds: 20
+# livenessProbe:
+#   httpGet:
+#     path: /_healthz
+#     port: 6000
+#   initialDelaySeconds: 15
+#   periodSeconds: 20
 
-readinessProbe:
-  httpGet:
-    path: /_healthz
-    port: 6000
-  initialDelaySeconds: 5
-  periodSeconds: 10
+# readinessProbe:
+#   httpGet:
+#     path: /_healthz
+#     port: 6000
+#   initialDelaySeconds: 5
+#   periodSeconds: 10
