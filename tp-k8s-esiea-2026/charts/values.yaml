@@ -1,41 +1,63 @@
 replicaCount: 1
 
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
-  tag: latest
-  pullPolicy: IfNotPresent
+  frontend:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  currency:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  productcatalog:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  cart:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  checkout:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  recommendation:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  shipping:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  ad:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  email:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
+  shoppingassistant:
+    repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/shoppingassistantservice
+    tag: v0.10.4
+    pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
-  port: 8080
-  DISABLE_PROFILER value: "1"
-env: {}
+  frontend: 8080
+  currency: 7000
+  productcatalog: 3550
+  cart: 7070
+  checkout: 5050
+  recommendation: 8080
+  shipping: 50051
+  ad: 9555
+  email: 2500
+  shoppingassistant: 6060
 
-resources: {}
-
-livenessProbe:
-  httpGet:
-    path: /_healthz
-    port: 8080
-  initialDelaySeconds: 15
-  periodSeconds: 20
-
-readinessProbe:
-  httpGet:
-    path: /_healthz
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 10
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: Prefix
-
-nameOverride: ""
-fullnameOverride: ""
+resources:
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+  requests:
+    cpu: "250m"
+    memory: "128Mi"
