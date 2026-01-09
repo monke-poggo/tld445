@@ -8,6 +8,7 @@ services:
     service:
       type: ClusterIP
       port: 7000
+      
     env:
       - name: PORT
         value: "7000"

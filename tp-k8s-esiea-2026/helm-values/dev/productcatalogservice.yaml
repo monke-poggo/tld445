@@ -12,30 +12,33 @@ service:
   port: 3550
 
 env:
-  PORT: "3550"
-  DISABLE_PROFILER: "1"
-#  DISABLE_TRACING: "1"
- # DISABLE_DEBUGGER: "1"
- # GCLOUD_PROJECT: ""
-
+    - name: PORT
+      value: "7000"
+    - name: DISABLE_PROFILER
+      value: "1"
+    - name: CART_SERVICE_ADDR
+      value: "cart-online-boutique-service:7070"
+    - name: PRODUCT_CATALOG_SERVICE_ADDR
+      value: "productcatalog-online-boutique-service:3550"
+    - name: PAYMENT_SERVICE_ADDR
+      value: "payment-online-boutique-service:5050"
+    - name: RECOMMENDATION_SERVICE_ADDR
+      value: "recommendation-online-boutique-service:8080"
+    - name: SHIPPING_SERVICE_ADDR
+      value: "shipping-online-boutique-service:50051"
+    - name: CHECKOUT_SERVICE_ADDR
+      value: "checkout-online-boutique-service:5050"
+    - name: AD_SERVICE_ADDR
+      value: "ad-online-boutique-service:9555"
+    - name: EMAIL_SERVICE_ADDR
+      value: "email-online-boutique-service:2500"
 resources:
   limits:
-    cpu: "300m"
-    memory: "256Mi"
+       cpu: "200m"
+  memory: "128Mi"
+
   requests:
-    cpu: "150m"
-    memory: "128Mi"
-
-livenessProbe:
-  httpGet:
-    path: /health
-    port: 3550
-  initialDelaySeconds: 10
-  periodSeconds: 15
-
-readinessProbe:
-  httpGet:
-    path: /health
-    port: 3550
-  initialDelaySeconds: 5
-  periodSeconds: 10
+        cpu: "100m"
+        memory: "64Mi"
+  probes:
+      grpc: true
