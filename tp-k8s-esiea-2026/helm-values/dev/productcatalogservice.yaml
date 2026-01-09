@@ -1,39 +1,65 @@
-replicaCount: 1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-productcatalogservice-online-boutique-service
+  namespace: online-boutique-dev
+  labels:
+    app: productcatalog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: productcatalog
+  template:
+    metadata:
+      labels:
+        app: productcatalog
+    spec:
+      containers:
+      - name: productcatalogservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.4
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: PORT
+            value: "3550"
+          - name: DISABLE_PROFILER
+            value: "1"
+        resources:
+          limits:
+            cpu: "300m"
+            memory: "256Mi"
+          requests:
+            cpu: "150m"
+            memory: "128Mi"
+        ports:
+          - containerPort: 3550
+        livenessProbe:
+          grpc:
+            port: 3550
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          grpc:
+            port: 3550
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
 
-name: productcatalogservice
-image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
-  tag: v0.10.4
-  pullPolicy: IfNotPresent
+---
 
-service:
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-productcatalogservice-online-boutique-service
+  namespace: online-boutique-dev
+spec:
   type: ClusterIP
-  port: 3550
-
-env:
-  PORT: "3550"
-  DISABLE_PROFILER: "1"
-
-resources:
-  limits:
-    cpu: "300m"
-    memory: "256Mi"
-  requests:
-    cpu: "150m"
-    memory: "128Mi"
-
-livenessProbe:
-  grpc:
-    port: 3550
-  initialDelaySeconds: 10
-  periodSeconds: 15
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-readinessProbe:
-  grpc:
-    port: 3550
-  initialDelaySeconds: 5
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
+  selector:
+    app: productcatalog
+  ports:
+    - protocol: TCP
+      port: 3550
+      targetPort: 3550
