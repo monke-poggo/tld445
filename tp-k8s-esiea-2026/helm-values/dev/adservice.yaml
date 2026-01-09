@@ -11,7 +11,7 @@ service:
 
 env:
   PORT: "9555"
-  DISABLE_PROFILER: "1"
+  PROJECT_ID: "solar-galaxy-483809-p3"
 resources:
   limits:
     cpu: "200m"
