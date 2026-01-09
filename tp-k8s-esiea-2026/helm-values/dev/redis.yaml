@@ -24,13 +24,17 @@ resources:
     memory: "128Mi"
 
 livenessProbe:
-  tcpSocket:
-    port: 6379
-  initialDelaySeconds: 30
+  exec:
+    command:
+      - redis-cli
+      - ping
+  initialDelaySeconds: 20
   periodSeconds: 10
 
 readinessProbe:
-  tcpSocket:
-    port: 6379
+  exec:
+    command:
+      - redis-cli
+      - ping
   initialDelaySeconds: 5
   periodSeconds: 5
