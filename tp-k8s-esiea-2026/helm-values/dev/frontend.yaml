@@ -3,7 +3,7 @@ replicaCount: 1
 name: frontend
 image:
   repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
-  tag: v0.10.4
+  tag: v0.8.0
   pullPolicy: IfNotPresent
 
 service:
@@ -20,7 +20,6 @@ env:
   CHECKOUT_SERVICE_ADDR: "checkout-online-boutique-service:5050"
   AD_SERVICE_ADDR: "ad-online-boutique-service:9555"
   EMAIL_SERVICE_ADDR: "email-online-boutique-service:2500"
-  SHOPPING_ASSISTANT_SERVICE_ADDR: ""
   DISABLE_PROFILER: "1"
 
 resources:
