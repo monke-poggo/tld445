@@ -12,7 +12,7 @@ service:
 
 env:
   PORT: "7070"
-
+  DISABLE_PROFILER: "1"
 resources:
   limits:
     cpu: "300m"
