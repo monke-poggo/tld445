@@ -1,37 +1,53 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dev-redis
+  name: dev-redis-online-boutique
   namespace: online-boutique-dev
+  labels:
+    app: dev-redis-online-boutique
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dev-redis
+      app: dev-redis-online-boutique
   template:
     metadata:
       labels:
-        app: dev-redis
+        app: dev-redis-online-boutique
     spec:
       containers:
-      - name: redis
-        image: redis:6.2
-        ports:
-        - containerPort: 6379
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-        livenessProbe:
-          tcpSocket:
-            port: 6379
-          initialDelaySeconds: 20
-          periodSeconds: 15
-        readinessProbe:
-          tcpSocket:
-            port: 6379
-          initialDelaySeconds: 10
-          periodSeconds: 10
+        - name: redis
+          image: redis:6.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-redis-online-boutique
+  namespace: online-boutique-dev
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: dev-redis-online-boutique
