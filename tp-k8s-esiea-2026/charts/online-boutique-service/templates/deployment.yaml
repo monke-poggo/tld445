@@ -48,6 +48,8 @@ spec:
               value: "email-online-boutique-service:2500"
             - name: CURRENCY_SERVICE_ADDR
               value: "currency-online-boutique-service:7000"
+            - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+              value: "shopping-assistant-online-boutique-service:6060"
 
           resources:
             limits:
