@@ -2,10 +2,9 @@ replicaCount: 1
 
 name: productcatalogservice
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
   tag: v0.10.4
   pullPolicy: IfNotPresent
-
 
 service:
   type: ClusterIP
@@ -14,9 +13,6 @@ service:
 env:
   PORT: "3550"
   DISABLE_PROFILER: "1"
-#  DISABLE_TRACING: "1"
- # DISABLE_DEBUGGER: "1"
- # GCLOUD_PROJECT: ""
 
 resources:
   limits:
@@ -26,16 +22,18 @@ resources:
     cpu: "150m"
     memory: "128Mi"
 
-# livenessProbe:
-#   httpGet:
-#     path: /health
-#     port: 3550
-#   initialDelaySeconds: 10
-#   periodSeconds: 15
+livenessProbe:
+  grpc:
+    port: 3550
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
 
-# readinessProbe:
-#   httpGet:
-#     path: /health
-#     port: 3550
-#   initialDelaySeconds: 5
-#   periodSeconds: 10
+readinessProbe:
+  grpc:
+    port: 3550
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3

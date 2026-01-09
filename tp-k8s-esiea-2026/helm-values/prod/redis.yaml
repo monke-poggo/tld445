@@ -1,4 +1,4 @@
-# Configuration Redis avec StatefulSet et persistance
+# Configuration Redis pour Production avec StatefulSet et persistance
 replicaCount: 1
 
 image:
@@ -13,7 +13,7 @@ service:
 # Variables d'environnement pour Redis
 env: {}
 
-# Health checks adaptés pour Redis
+# Health checks adaptés pour Redis (plus stricts en prod)
 livenessProbe:
   tcpSocket:
     port: 6379
@@ -32,21 +32,21 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 3
 
-# Ressources pour Redis
+# Ressources plus importantes pour la production
 resources:
   limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
     cpu: 200m
     memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
 
 # Configuration pour StatefulSet
 useStatefulSet: true
 persistence:
   enabled: true
   storageClass: ""  # Utilise la StorageClass par défaut
-  size: 1Gi
+  size: 5Gi  # Plus d'espace en production
   mountPath: /data
 
 # Configuration du nom

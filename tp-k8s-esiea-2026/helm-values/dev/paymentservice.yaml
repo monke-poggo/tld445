@@ -8,14 +8,13 @@ image:
 
 service:
   type: ClusterIP
-  port: 50051
+  port: 5050
 
 env:
-  PORT: "50051"
+  PORT: "5050"
   DISABLE_PROFILER: "1"
   DISABLE_TRACING: "1"
   DISABLE_DEBUGGER: "1"
-  GCLOUD_PROJECT: ""
 
 resources:
   limits:
@@ -25,16 +24,18 @@ resources:
     cpu: "150m"
     memory: "128Mi"
 
-# livenessProbe:
-#   httpGet:
-#     path: /health
-#     port: 50051
-#   initialDelaySeconds: 15
-#   periodSeconds: 15
+livenessProbe:
+  grpc:
+    port: 5050
+  initialDelaySeconds: 15
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
 
-# readinessProbe:
-#   httpGet:
-#     path: /health
-#     port: 50051
-#   initialDelaySeconds: 5
-#   periodSeconds: 10
+readinessProbe:
+  grpc:
+    port: 5050
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
