@@ -1,5 +1,4 @@
 replicaCount: 1
-
 name: frontend
 image:
   repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
@@ -7,17 +6,16 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
-  port: 8080  # port interne du service dans le cluster
+  port: 8080
 
 env:
   PORT: "8080"
   PRODUCT_CATALOG_SERVICE_ADDR: "dev-productcatalogservice-online-boutique-service:80"
-  CURRENCY_SERVICE_ADDR: "dev-currencyservice-online-boutique-service:80"
   CART_SERVICE_ADDR: "dev-cartservice-online-boutique-service:7070"
+  CHECKOUT_SERVICE_ADDR: "dev-checkoutservice-online-boutique-service:80"
+  CURRENCY_SERVICE_ADDR: "dev-currencyservice-online-boutique-service:80"
   RECOMMENDATION_SERVICE_ADDR: "dev-recommendationservice-online-boutique-service:8080"
   SHIPPING_SERVICE_ADDR: "dev-shippingservice-online-boutique-service:50051"
-  CHECKOUT_SERVICE_ADDR: "dev-checkoutservice-online-boutique-service:80"
   AD_SERVICE_ADDR: "dev-adservice-online-boutique-service:9555"
   SHOPPING_ASSISTANT_SERVICE_ADDR: "dev-shoppingassistantservice-online-boutique-service:6060"
   DISABLE_PROFILER: "1"
@@ -29,29 +27,3 @@ resources:
   requests:
     cpu: "250m"
     memory: "128Mi"
-
-livenessProbe:
-  httpGet:
-    path: /_healthz
-    port: 8080
-  initialDelaySeconds: 15
-  periodSeconds: 20
-
-readinessProbe:
-  httpGet:
-    path: /_healthz
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 10
-
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  hosts:
-    - host: localhost
-      paths:
-        - path: /
-          pathType: Prefix
-          port: 8080
