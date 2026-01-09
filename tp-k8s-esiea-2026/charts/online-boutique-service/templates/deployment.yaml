@@ -23,6 +23,8 @@ spec:
           ports:
             - containerPort: {{ .Values.service.port }}
           env:
+            - name: PORT
+              value: "7000"
             - name: CART_SERVICE_ADDR
               value: "cart-online-boutique-service:7070"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
