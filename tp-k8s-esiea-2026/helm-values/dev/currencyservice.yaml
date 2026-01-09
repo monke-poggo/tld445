@@ -1,9 +1,8 @@
 replicaCount: 1
-
 name: currencyservice
 image:
   repository: gcr.io/google-samples/microservices-demo/currencyservice
-  tag: v0.4.0
+  tag: v0.3.0
   pullPolicy: IfNotPresent
 
 service:
@@ -13,6 +12,8 @@ service:
 env:
   PORT: "7000"
   DISABLE_PROFILER: "1"
+  DISABLE_TRACING: "1"
+  DISABLE_DEBUGGER: "1"
 
 resources:
   limits:
@@ -24,14 +25,14 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: /health
+    path: /_healthz
     port: 7000
-  initialDelaySeconds: 10
-  periodSeconds: 15
+  initialDelaySeconds: 15
+  periodSeconds: 20
 
 readinessProbe:
   httpGet:
-    path: /health
+    path: /_healthz
     port: 7000
   initialDelaySeconds: 5
   periodSeconds: 10
