@@ -3,7 +3,7 @@ replicaCount: 1
 name: checkoutservice
 image:
   repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
-  tag: v0.10.04
+  tag: v0.10.4
   pullPolicy: IfNotPresent
 
 service:
