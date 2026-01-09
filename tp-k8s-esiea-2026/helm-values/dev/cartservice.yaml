@@ -1,13 +1,16 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/google-samples/microservices-demo/cartservice:v0.3.8
-  tag: v0.3.0
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+  tag: v0.3.8
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 7070
+
+containerPort: 7070
+
 env:
   DISABLE_PROFILER: "1"
   DISABLE_TRACING: "1"
@@ -15,9 +18,21 @@ env:
   GOOGLE_CLOUD_PROJECT: ""
 
 resources:
-  limits:
-    cpu: "300m"
-    memory: "256Mi"
   requests:
     cpu: "150m"
     memory: "128Mi"
+  limits:
+    cpu: "300m"
+    memory: "256Mi"
+
+livenessProbe:
+  grpc:
+    port: 7070
+  initialDelaySeconds: 20
+  periodSeconds: 15
+
+readinessProbe:
+  grpc:
+    port: 7070
+  initialDelaySeconds: 20
+  periodSeconds: 15
