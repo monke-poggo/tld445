@@ -1,7 +1,6 @@
 replicaCount: 1
-
 image:
-  repository: us-docker.pkg.dev/google-samples/containers/gke/microservices-demo/adservice
+  repository: gcr.io/google-samples/microservices-demo/adservice
   tag: v0.2.0
   pullPolicy: IfNotPresent
 
