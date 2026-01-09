@@ -43,15 +43,14 @@ image:
     pullPolicy: IfNotPresent
 
 service:
-  frontend: 8080
-  currency: 7000
-  productcatalog: 3550
   cart: 7070
-  checkout: 5050
+  productcatalog: 80          # correspond au ClusterIP du service
+  checkout: 80                # correspond au ClusterIP du service
   recommendation: 8080
   shipping: 50051
   ad: 9555
   email: 2500
+  currency: 80                # correspond au ClusterIP du service
   shoppingassistant: 6060
 
 resources:
