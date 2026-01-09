@@ -2,9 +2,10 @@ replicaCount: 1
 
 name: productcatalogservice
 image:
-  repository: gcr.io/google-samples/microservices-demo/productcatalogservice
-  tag: v0.4.0
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+  tag: v0.10.4
   pullPolicy: IfNotPresent
+
 
 service:
   type: ClusterIP

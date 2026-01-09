@@ -2,8 +2,8 @@ replicaCount: 1
 
 name: frontend
 image:
-  repository: gcr.io/google-samples/microservices-demo/frontend
-  tag: v0.8.0
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+  tag: v0.10.4
   pullPolicy: IfNotPresent
 
 service:
