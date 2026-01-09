@@ -1,29 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: online-boutique-cartservice-dev
+  name: dev-cartservice
   namespace: argocd
 spec:
   project: default
+
   source:
     repoURL: https://github.com/monke-poggo/tld445.git
-    targetRevision: HEAD
+    targetRevision: main
     path: tp-k8s-esiea-2026/charts/online-boutique-service
     helm:
-      values: |
-        imageRegistry: us-central1-docker.pkg.dev/google-samples/microservices-demo
-        name: cartservice
-        image: cartservice
-        tag: v0.8.0
-        protocol: grpc
-        containerPort: 7070
-        servicePort: 7070
+      valueFiles:
+        - ../../helm-values/dev/cartservice.yaml
+
   destination:
     server: https://kubernetes.default.svc
     namespace: online-boutique-dev
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
