@@ -13,6 +13,9 @@ service:
 env:
   PORT: "3550"
   DISABLE_PROFILER: "1"
+  DISABLE_TRACING: "1"
+  DISABLE_DEBUGGER: "1"
+  GCLOUD_PROJECT: ""
 
 resources:
   limits:
