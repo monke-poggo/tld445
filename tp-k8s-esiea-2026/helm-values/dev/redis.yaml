@@ -8,13 +8,7 @@ image:
 service:
   type: ClusterIP
   port: 6379
-  DISABLE_PROFILER value: "1"
-env:
-  REDIS_PORT: "6379"
-  DISABLE_PROFILER: "1"
-  DISABLE_TRACING: "1"
-  DISABLE_DEBUGGER: "1"
-  GCLOUD_PROJECT: ""
+
 resources:
   limits:
     cpu: "200m"
@@ -22,19 +16,3 @@ resources:
   requests:
     cpu: "100m"
     memory: "128Mi"
-
-livenessProbe:
-  exec:
-    command:
-      - redis-cli
-      - ping
-  initialDelaySeconds: 20
-  periodSeconds: 10
-
-readinessProbe:
-  exec:
-    command:
-      - redis-cli
-      - ping
-  initialDelaySeconds: 5
-  periodSeconds: 5
