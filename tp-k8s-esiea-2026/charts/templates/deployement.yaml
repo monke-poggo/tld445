@@ -24,7 +24,18 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.port }}
-          {{- if .Values.env }}
+          {{- if or .Values.configMap.create .Values.secrets.create }}
+          envFrom:
+          {{- if .Values.configMap.create }}
+            - configMapRef:
+                name: {{ include "online-boutique-service.fullname" . }}-config
+          {{- end }}
+          {{- if .Values.secrets.create }}
+            - secretRef:
+                name: {{ include "online-boutique-service.fullname" . }}-secret
+          {{- end }}
+          {{- end }}
+          {{- if and .Values.env (not .Values.configMap.create) }}
           env:
           {{- range $key, $value := .Values.env }}
             - name: {{ $key }}

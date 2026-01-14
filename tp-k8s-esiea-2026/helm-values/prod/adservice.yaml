@@ -50,3 +50,23 @@ rbac:
     - apiGroups: [""]
       resources: ["services"]
       verbs: ["get", "list"]
+
+serviceAccount:
+  create: true
+  name: "adservice"
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["services", "endpoints"]
+      verbs: ["get", "list"]
+
+configMap:
+  create: true
+
+autoscaling:
+  enabled: false  # Service non critique
+
+podDisruptionBudget:
+  enabled: false

@@ -70,11 +70,31 @@ rbac:
     - apiGroups: [""]
       resources: ["services", "endpoints"]
       verbs: ["get", "list"]
+
+# Configuration ConfigMap
+configMap:
+  create: true
+
+# HPA désactivé en dev
+autoscaling:
+  enabled: false
+
+# PDB désactivé en dev
+podDisruptionBudget:
+  enabled: false
+
+# Ingress pour accès web
+ingress:
   enabled: true
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: Prefix
     - host: online-boutique-dev.local
       paths:
         - path: /

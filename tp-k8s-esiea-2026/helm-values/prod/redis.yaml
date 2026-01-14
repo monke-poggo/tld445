@@ -11,7 +11,18 @@ service:
   port: 6379
 
 # Variables d'environnement pour Redis
-env: {}
+env:
+  REDIS_PASSWORD: ""  # Sera surchargé par le secret
+
+# Configuration ConfigMap
+configMap:
+  create: true
+
+# Configuration Secrets
+secrets:
+  create: true
+  data:
+    REDIS_PASSWORD: "prod-redis-secure-password-2024"
 
 # Health checks adaptés pour Redis (plus stricts en prod)
 livenessProbe:
@@ -70,3 +81,11 @@ rbac:
     - apiGroups: [""]
       resources: ["persistentvolumeclaims", "persistentvolumes"]
       verbs: ["get", "list", "watch"]
+
+# HPA désactivé pour Redis (StatefulSet)
+autoscaling:
+  enabled: false
+
+# PDB pour Redis
+podDisruptionBudget:
+  enabled: false  # Pas de PDB pour 1 seul replica

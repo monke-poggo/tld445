@@ -70,11 +70,36 @@ rbac:
     - apiGroups: [""]
       resources: ["services", "endpoints"]
       verbs: ["get", "list"]
+
+# Configuration ConfigMap
+configMap:
+  create: true
+
+# HPA activé en prod
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# PDB pour assurer la disponibilité
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Ingress pour accès web
+ingress:
   enabled: true
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
+    - host: localhost
+      paths:
+        - path: /prod
+          pathType: Prefix
     - host: online-boutique-prod.local
       paths:
         - path: /

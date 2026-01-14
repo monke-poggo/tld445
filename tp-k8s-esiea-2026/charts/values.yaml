@@ -20,23 +20,9 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /_healthz
-    port: 8080
-  initialDelaySeconds: 15
-  periodSeconds: 20
-  timeoutSeconds: 5
-  failureThreshold: 3
+livenessProbe: {}
 
-readinessProbe:
-  httpGet:
-    path: /_healthz
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
+readinessProbe: {}
 
 ingress:
   enabled: false
@@ -78,3 +64,26 @@ rbac:
     - apiGroups: [""]
       resources: ["pods", "services", "endpoints"]
       verbs: ["get", "list", "watch"]
+
+# Configuration HPA (Horizontal Pod Autoscaler)
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Configuration PDB (Pod Disruption Budget)
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+# Configuration ConfigMap
+configMap:
+  create: false
+
+# Configuration Secrets
+secrets:
+  create: false
+  data: {}

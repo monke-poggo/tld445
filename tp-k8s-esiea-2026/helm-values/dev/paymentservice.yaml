@@ -39,3 +39,23 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
+
+serviceAccount:
+  # create: true
+  name: "paymentservice"
+
+rbac:
+  # create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["services", "endpoints"]
+      verbs: ["get", "list"]
+
+# configMap:
+  # create: true
+
+autoscaling:
+  enabled: false
+
+podDisruptionBudget:
+  enabled: false

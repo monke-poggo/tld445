@@ -43,3 +43,27 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
+
+serviceAccount:
+  create: true
+  name: "checkoutservice"
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["services", "endpoints"]
+      verbs: ["get", "list"]
+
+configMap:
+  create: true
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

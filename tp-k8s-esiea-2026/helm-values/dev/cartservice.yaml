@@ -40,13 +40,25 @@ readinessProbe:
   failureThreshold: 3
 
 serviceAccount:
-  create: true
+  # create: true
   name: "cartservice"
 
 rbac:
-  create: true
+  # create: true
   rules:
     - apiGroups: [""]
       resources: ["services", "endpoints"]
       verbs: ["get", "list"]
       resourceNames: ["redis-online-boutique-service"]
+
+# Configuration ConfigMap
+# configMap:
+  # create: true
+
+# HPA désactivé en dev
+autoscaling:
+  enabled: false
+
+# PDB désactivé en dev
+podDisruptionBudget:
+  enabled: false

@@ -171,21 +171,80 @@ kubectl get svc -n online-boutique-prod
 
 ## Accès à l'application
 
-### Environnement dev
+### 🚀 Méthode Rapide : Scripts Automatiques
+
+Des scripts sont fournis pour ouvrir automatiquement le frontend dans votre navigateur :
+
+**Windows PowerShell :**
+```powershell
+.\open-frontend.ps1 dev   # Pour l'environnement dev
+.\open-frontend.ps1 prod  # Pour l'environnement prod
+```
+
+**Linux/Mac :**
 ```bash
-# Port-forward vers le frontend dev
+chmod +x open-frontend.sh
+./open-frontend.sh dev    # Pour l'environnement dev
+./open-frontend.sh prod   # Pour l'environnement prod
+```
+
+Ces scripts :
+- ✅ Vérifient que l'application est déployée
+- ✅ Détectent automatiquement si l'Ingress est disponible
+- ✅ Ouvrent le navigateur à la bonne URL
+- ✅ Utilisent le port-forward en fallback si nécessaire
+
+---
+
+### Via Ingress (Recommandé)
+
+Une fois l'application déployée, vous pouvez y accéder directement via votre navigateur :
+
+#### Environnement Dev
+**URL** : http://localhost
+
+L'Ingress NGINX route automatiquement les requêtes vers le frontend dev.
+
+#### Environnement Prod
+**URL** : http://localhost/prod
+
+L'Ingress NGINX route automatiquement les requêtes vers le frontend prod.
+
+> **Note** : Avec Kind, l'Ingress NGINX est configuré pour écouter sur le port 80 de votre machine locale grâce au port mapping dans `kind-config.yaml`.
+
+---
+
+### Via Port-Forward (Alternative)
+
+Si vous préférez utiliser le port-forward :
+
+#### Environnement dev
+```bash
 kubectl port-forward -n online-boutique-dev svc/frontend-online-boutique-service 8080:8080
 ```
 Accès : http://localhost:8080
 
-### Environnement prod
+#### Environnement prod
 ```bash
-# Port-forward vers le frontend prod
 kubectl port-forward -n online-boutique-prod svc/frontend-online-boutique-service 8081:8080
 ```
 Accès : http://localhost:8081
 
-### Via Ingress (si configuré)
+---
+
+### Via Hosts File (Optionnel)
+
+Pour utiliser les noms de domaine personnalisés, ajoutez ces lignes à votre fichier hosts :
+
+**Windows** : `C:\Windows\System32\drivers\etc\hosts`  
+**Linux/Mac** : `/etc/hosts`
+
+```
+127.0.0.1 online-boutique-dev.local
+127.0.0.1 online-boutique-prod.local
+```
+
+Puis accédez via :
 - Dev : http://online-boutique-dev.local
 - Prod : http://online-boutique-prod.local
 
@@ -210,6 +269,10 @@ Accès : https://localhost:8082
 | Ressources RAM | 64-256Mi | 128-512Mi |
 | Ingress | Activé (dev.local) | Activé (prod.local) |
 | Persistance Redis | 1Gi | 5Gi |
+| HPA | Désactivé | Activé (services critiques) |
+| PDB | Désactivé | Activé (minAvailable: 1) |
+| ConfigMaps | Activés | Activés |
+| Secrets | Activés (Redis) | Activés (Redis) |
 
 ### Health Checks
 
@@ -219,12 +282,30 @@ Accès : https://localhost:8082
 
 ### Sécurité
 
-- NetworkPolicy activée pour Redis (accès restreint au cartservice)
-- RBAC configuré avec principe du moindre privilège pour chaque service
-- ServiceAccount dédié par service
-- Secrets séparés par environnement
+- **NetworkPolicy** activée pour Redis (accès restreint au cartservice)
+- **RBAC** configuré avec principe du moindre privilège pour TOUS les services
+- **ServiceAccount** dédié par service
+- **Secrets** Kubernetes pour données sensibles (REDIS_PASSWORD)
+- **ConfigMaps** explicites pour chaque service
 - Pas d'exposition externe sauf frontend via Ingress
 - Permissions minimales : services n'accèdent qu'aux ressources nécessaires
+
+### Scalabilité
+
+#### HPA (Horizontal Pod Autoscaler) - Production uniquement
+Services avec HPA activé en production :
+- **frontend** : 2-5 replicas (CPU: 70%, Memory: 80%)
+- **cartservice** : 2-5 replicas (CPU: 75%, Memory: 80%)
+- **checkoutservice** : 2-5 replicas (CPU: 75%)
+- **productcatalogservice** : 2-4 replicas (CPU: 75%)
+- **paymentservice** : 2-5 replicas (CPU: 75%)
+- **currencyservice** : 2-4 replicas (CPU: 75%)
+- **recommendationservice** : 2-4 replicas (CPU: 75%)
+- **emailservice** : 2-4 replicas (CPU: 75%)
+- **shippingservice** : 2-4 replicas (CPU: 75%)
+
+#### PDB (Pod Disruption Budget) - Production uniquement
+Tous les services critiques en production ont un PDB avec `minAvailable: 1` pour garantir la disponibilité pendant les maintenances.
 
 ### Persistance
 
@@ -295,11 +376,15 @@ kubectl delete namespace online-boutique-prod
 - ✅ Séparation des environnements (dev/prod)
 - ✅ Cycle de vie indépendant par service
 - ✅ Configuration externalisée via Helm values
+- ✅ **ConfigMaps explicites** pour chaque service
+- ✅ **Secrets Kubernetes** pour données sensibles (REDIS_PASSWORD)
 - ✅ Health checks appropriés (HTTP/gRPC/TCP)
 - ✅ Gestion des ressources (limits/requests)
+- ✅ **HPA (Horizontal Pod Autoscaler)** activé en production
+- ✅ **PDB (Pod Disruption Budget)** pour la résilience en production
 - ✅ Persistance pour les données critiques (Redis StatefulSet)
 - ✅ Sécurité réseau (NetworkPolicy pour Redis)
-- ✅ RBAC avec principe du moindre privilège
+- ✅ **RBAC complet** avec principe du moindre privilège pour TOUS les services
 - ✅ ServiceAccount dédié par service
 - ✅ Déploiement GitOps avec ArgoCD
 - ✅ Labels et annotations cohérents
@@ -309,10 +394,10 @@ kubectl delete namespace online-boutique-prod
 
 ## Améliorations possibles
 
-- HPA (Horizontal Pod Autoscaler) pour la scalabilité automatique
-- PDB (Pod Disruption Budget) pour la résilience
 - Monitoring avec Prometheus/Grafana
 - Logging centralisé avec ELK/Loki
 - Secrets management avec External Secrets Operator
 - Service Mesh (Istio) pour la sécurité avancée
 - Tests automatisés avec Helm unittest
+- TLS/HTTPS sur les Ingress
+- SecurityContext avancé (runAsNonRoot, readOnlyRootFilesystem)

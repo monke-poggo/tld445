@@ -37,3 +37,27 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
+
+serviceAccount:
+  create: true
+  name: "productcatalogservice"
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["services", "endpoints"]
+      verbs: ["get", "list"]
+
+configMap:
+  create: true
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 75
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
