@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: default
+  namespace: argocd
+spec:
+  # Allow all source repos
+  sourceRepos:
+    - '*'
+  
+  # Allow deployments to all namespaces
+  destinations:
+    - namespace: '*'
+      server: '*'
+  
+  # Allow all resource types
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  
+  # Allow all namespaced resources
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

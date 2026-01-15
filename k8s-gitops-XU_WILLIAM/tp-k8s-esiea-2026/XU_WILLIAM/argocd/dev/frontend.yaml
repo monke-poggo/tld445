@@ -1,0 +1,43 @@
+# Application ArgoCD pour déployer le service frontend en environnement DEV
+# ArgoCD surveille ce manifeste et synchronise automatiquement l'état souhaité dans le cluster
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend-dev
+  namespace: argocd  # Les Applications ArgoCD sont toujours dans le namespace argocd
+  annotations:
+    # Sync-wave: ordre de déploiement (0 = premier, plus haut = dernier)
+    # 0 = redis (base de données)
+    # 1 = services backend sans dépendances
+    # 2 = services avec dépendances
+    # 3 = frontend (a besoin de tous les backends)
+    argocd.argoproj.io/sync-wave: "3"
+  finalizers:
+    # Assure le nettoyage des ressources lors de la suppression de l'Application
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  # Projet ArgoCD (default = projet par défaut)
+  project: default
+  
+  # SOURCE: d'où vient le code/manifests
+  source:
+    repoURL: https://gitlab.esiea.fr/bastien.ceriani/k8s-gitops.git  # Repository Git GitLab ESIEA
+    targetRevision: XU_WILLIAM  # Branche à suivre (HEAD = branche par défaut, généralement main)
+    path: tp-k8s-esiea-2026/XU_WILLIAM/charts/online-boutique-service  # Chemin vers le Helm Chart générique
+    helm:
+      # Fichier de values spécifique pour ce service et cet environnement
+      valueFiles:
+        - ../../helm-values/dev/frontend.yaml
+  
+  # DESTINATION: où déployer les ressources
+  destination:
+    server: https://kubernetes.default.svc  # Cluster local (in-cluster)
+    namespace: online-boutique-dev  # Namespace de déploiement
+  
+  # SYNC POLICY: comment synchroniser
+  syncPolicy:
+    automated:
+      prune: true      # Supprime les ressources qui ne sont plus dans Git
+      selfHeal: true   # Recréé automatiquement les ressources modifiées manuellement
+    syncOptions:
+      - CreateNamespace=true  # Crée le namespace s'il n'existe pas

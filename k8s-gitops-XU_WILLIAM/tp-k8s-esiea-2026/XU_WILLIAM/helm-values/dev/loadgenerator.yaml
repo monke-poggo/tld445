@@ -1,0 +1,36 @@
+name: loadgenerator
+replicaCount: 1
+image:
+  repository: gcr.io/google-samples/microservices-demo
+  tag: v0.10.1
+service:
+  type: ClusterIP
+  port: 8089
+  targetPort: 8089
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 300m
+    memory: 256Mi
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false
+env:
+  - name: FRONTEND_ADDR
+    value: "frontend:80"
+  - name: USERS
+    value: "10"
+  - name: DISABLE_PROFILER
+    value: "1"
+  - name: DISABLE_TRACING
+    value: "1"
+autoscaling:
+  enabled: false
+podDisruptionBudget:
+  enabled: false
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: dev

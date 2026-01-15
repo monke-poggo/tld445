@@ -1,0 +1,27 @@
+name: redis-cart
+replicaCount: 1
+image:
+  fullName: redis:alpine  # Image simple sans chemin
+service:
+  type: ClusterIP
+  port: 6379
+  targetPort: 6379
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false
+autoscaling:
+  enabled: false
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: prod
