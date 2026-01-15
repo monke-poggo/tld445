@@ -40,7 +40,7 @@ spec:
         {{- if .Values.image.fullName }}
         image: "{{ .Values.image.fullName }}"
         {{- else }}
-        image: "{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.securityContext.enabled }}
