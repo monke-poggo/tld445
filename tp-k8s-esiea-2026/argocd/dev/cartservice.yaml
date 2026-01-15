@@ -11,8 +11,8 @@ spec:
   project: default
   source:
     repoURL: https://gitlab.esiea.fr/bastien.ceriani/k8s-gitops.git
-    targetRevision: XU_WILLIAM
-    path: tp-k8s-esiea-2026/POGGI_VICTOR/charts/online-boutique-service
+    targetRevision: POGGI_VICTOR
+    path: tp-k8s-esiea-2026/charts/online-boutique-service
     helm:
       valueFiles:
         - ../../helm-values/dev/cartservice.yaml
