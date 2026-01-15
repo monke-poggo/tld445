@@ -9,10 +9,10 @@ spec:
     # repoURL: https://gitlab.esiea.fr/bastien.ceriani/k8s-gitops.git (GitLab ESIEA - pour le rendu final)
     repoURL: https://github.com/monke-poggo/tld445.git
     targetRevision: main
-    path: tp-k8s-esiea-2026/charts
+    path: tp-k8s-esiea-2026/charts/online-boutique-service
     helm:
       valueFiles:
-        - ../helm-values/dev/shippingservice.yaml
+        - ../../helm-values/dev/shippingservice.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: online-boutique-dev

@@ -2,26 +2,38 @@ replicaCount: 1
 
 name: frontend
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo
   tag: v0.10.4
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 8080
+  targetPort: 8080
 
 env:
-  PORT: "8080"
-  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice-online-boutique-service:3550"
-  CART_SERVICE_ADDR: "cartservice-online-boutique-service:7070"
-  CHECKOUT_SERVICE_ADDR: "checkoutservice-online-boutique-service:5050"
-  CURRENCY_SERVICE_ADDR: "currencyservice-online-boutique-service:7000"
-  RECOMMENDATION_SERVICE_ADDR: "recommendationservice-online-boutique-service:8080"
-  SHIPPING_SERVICE_ADDR: "shippingservice-online-boutique-service:50051"
-  AD_SERVICE_ADDR: "adservice-online-boutique-service:9555"
-  EMAIL_SERVICE_ADDR: "emailservice-online-boutique-service:5000"
-  SHOPPING_ASSISTANT_SERVICE_ADDR: "shoppingassistantservice-online-boutique-service:6060"
-  DISABLE_PROFILER: "1"
+  - name: PORT
+    value: "8080"
+  - name: PRODUCT_CATALOG_SERVICE_ADDR
+    value: "productcatalogservice-online-boutique-service:3550"
+  - name: CART_SERVICE_ADDR
+    value: "cartservice-online-boutique-service:7070"
+  - name: CHECKOUT_SERVICE_ADDR
+    value: "checkoutservice-online-boutique-service:5050"
+  - name: CURRENCY_SERVICE_ADDR
+    value: "currencyservice-online-boutique-service:7000"
+  - name: RECOMMENDATION_SERVICE_ADDR
+    value: "recommendationservice-online-boutique-service:8080"
+  - name: SHIPPING_SERVICE_ADDR
+    value: "shippingservice-online-boutique-service:50051"
+  - name: AD_SERVICE_ADDR
+    value: "adservice-online-boutique-service:9555"
+  - name: EMAIL_SERVICE_ADDR
+    value: "emailservice-online-boutique-service:5000"
+  - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+    value: "shoppingassistantservice-online-boutique-service:6060"
+  - name: DISABLE_PROFILER
+    value: "1"
 
 resources:
   limits:
@@ -32,6 +44,7 @@ resources:
     memory: "128Mi"
 
 livenessProbe:
+  enabled: true
   httpGet:
     path: /_healthz
     port: 8080
@@ -41,6 +54,7 @@ livenessProbe:
   failureThreshold: 3
 
 readinessProbe:
+  enabled: true
   httpGet:
     path: /_healthz
     port: 8080
@@ -60,30 +74,10 @@ ingress:
         - path: /
           pathType: Prefix
 
-serviceAccount:
-  create: true
-  name: "frontend"
+serviceAccount: true
 
-rbac:
-  create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["services", "endpoints"]
-      verbs: ["get", "list"]
-
-# Configuration ConfigMap
-configMap:
-  create: true
-
-# HPA désactivé en dev
-autoscaling:
+securityContext:
   enabled: false
-
-# PDB désactivé en dev
-podDisruptionBudget:
-  enabled: false
-
-# Ingress pour accès web
 ingress:
   enabled: true
   className: "nginx"
