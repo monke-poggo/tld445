@@ -104,8 +104,12 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
         {{- end }}
-        {{- if .Values.env }}
         env:
+        - name: PORT
+          value: "{{ .Values.service.targetPort }}"
+        - name: DISABLE_PROFILER
+          value: "1"
+        {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
         resources:
