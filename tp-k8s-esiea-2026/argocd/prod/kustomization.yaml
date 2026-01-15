@@ -1,12 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
-  - frontend.yaml
-  - productcatalogservice.yaml
+  - ../base
+  - adservice.yaml
   - cartservice.yaml
   - checkoutservice.yaml
   - currencyservice.yaml
-  - paymentservice.yaml
-  - recommendationservice.yaml
-  - shippingservice.yaml
-  - adservice.yaml
   - emailservice.yaml
-  - redis.yaml
+  - frontend.yaml
+  - loadgenerator.yaml
+  - paymentservice.yaml
+  - productcatalogservice.yaml
+  - recommendationservice.yaml
+  - redis-cart.yaml
+  - shippingservice.yaml
+
+namespace: argocd

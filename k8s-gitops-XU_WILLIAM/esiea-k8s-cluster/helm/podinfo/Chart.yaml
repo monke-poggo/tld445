@@ -1,6 +1,0 @@
-apiVersion: v2
-name: podinfo
-description: Minimal Helm chart to deploy PodInfo for GitOps workshop
-version: 0.1.0
-appVersion: "6.3.0"
-type: application

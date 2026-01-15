@@ -1,64 +1,52 @@
+name: cartservice
 replicaCount: 1
 
-name: cartservice
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
-  tag: v0.10.4
-  pullPolicy: IfNotPresent
+  repository: gcr.io/google-samples/microservices-demo
+  tag: v0.10.1
 
 service:
   type: ClusterIP
   port: 7070
-
-env:
-  PORT: "7070"
-  DISABLE_PROFILER: "1"
-  REDIS_ADDR: "redis-online-boutique-service:6379"
+  targetPort: 7070
 
 resources:
   limits:
-    cpu: "300m"
-    memory: "256Mi"
+    cpu: 300m
+    memory: 128Mi
   requests:
-    cpu: "150m"
-    memory: "128Mi"
+    cpu: 200m
+    memory: 64Mi
 
 livenessProbe:
+  enabled: true
   grpc:
     port: 7070
   initialDelaySeconds: 15
-  periodSeconds: 20
-  timeoutSeconds: 5
-  failureThreshold: 3
+  periodSeconds: 10
 
 readinessProbe:
+  enabled: true
   grpc:
     port: 7070
-  initialDelaySeconds: 5
+  initialDelaySeconds: 15
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
 
-serviceAccount:
-  # create: true
-  name: "cartservice"
+env:
+  - name: REDIS_ADDR
+    value: "redis-cart:6379"
 
-rbac:
-  # create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["services", "endpoints"]
-      verbs: ["get", "list"]
-      resourceNames: ["redis-online-boutique-service"]
-
-# Configuration ConfigMap
-# configMap:
-  # create: true
-
-# HPA désactivé en dev
+  - name: DISABLE_PROFILER
+    value: "1"
+  - name: DISABLE_TRACING
+    value: "1"
 autoscaling:
   enabled: false
 
-# PDB désactivé en dev
 podDisruptionBudget:
-  enabled: false
+  enabled: true
+  minAvailable: 1
+
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: dev

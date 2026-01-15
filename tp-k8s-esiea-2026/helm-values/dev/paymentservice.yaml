@@ -1,61 +1,46 @@
-replicaCount: 1
-
 name: paymentservice
+replicaCount: 1
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
-  tag: v0.10.4
-  pullPolicy: IfNotPresent
-
+  repository: gcr.io/google-samples/microservices-demo
+  tag: v0.10.1
 service:
   type: ClusterIP
   port: 50051
-
-env:
-  PORT: "50051"
-  DISABLE_PROFILER: "1"
-  DISABLE_TRACING: "1"
-  DISABLE_DEBUGGER: "1"
-
+  targetPort: 50051
 resources:
   limits:
-    cpu: "300m"
-    memory: "256Mi"
+    cpu: 200m
+    memory: 128Mi
   requests:
-    cpu: "150m"
-    memory: "128Mi"
-
+    cpu: 100m
+    memory: 64Mi
 livenessProbe:
+  enabled: true
   grpc:
     port: 50051
-  initialDelaySeconds: 15
-  periodSeconds: 15
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-readinessProbe:
-  grpc:
-    port: 50051
-  initialDelaySeconds: 5
+  initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-serviceAccount:
-  # create: true
-  name: "paymentservice"
-
-rbac:
-  # create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["services", "endpoints"]
-      verbs: ["get", "list"]
-
-# configMap:
-  # create: true
-
+readinessProbe:
+  enabled: true
+  grpc:
+    port: 50051
+  initialDelaySeconds: 10
+  periodSeconds: 10
+env:
+  - name: PORT
+    value: "50051"
+  - name: DISABLE_PROFILER
+    value: "1"
+  - name: DISABLE_TRACING
+    value: "1"
 autoscaling:
   enabled: false
-
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
 podDisruptionBudget:
-  enabled: false
+  enabled: true
+  minAvailable: 1
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: dev

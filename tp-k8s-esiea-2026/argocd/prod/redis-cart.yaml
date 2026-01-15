@@ -1,10 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cartservice-dev
+  name: redis-cart-prod
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"  # Après redis-cart
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
@@ -12,13 +10,13 @@ spec:
   source:
     repoURL: https://gitlab.esiea.fr/bastien.ceriani/k8s-gitops.git
     targetRevision: XU_WILLIAM
-    path: tp-k8s-esiea-2026/XU_WILLIAM/charts/online-boutique-service
+    path: tp-k8s-esiea-2026/POGGI_VICTOR/charts/online-boutique-service
     helm:
       valueFiles:
-        - ../../helm-values/dev/cartservice.yaml
+        - ../../helm-values/prod/redis-cart.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: online-boutique-dev
+    namespace: online-boutique-prod
   syncPolicy:
     automated:
       prune: true

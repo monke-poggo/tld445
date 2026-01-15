@@ -1,59 +1,55 @@
+name: productcatalogservice
 replicaCount: 1
 
-name: productcatalogservice
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
-  tag: v0.10.4
-  pullPolicy: IfNotPresent
+  repository: gcr.io/google-samples/microservices-demo
+  tag: v0.10.1
 
 service:
   type: ClusterIP
   port: 3550
-
-env:
-  PORT: "3550"
-  DISABLE_PROFILER: "1"
+  targetPort: 3550
 
 resources:
   limits:
-    cpu: "300m"
-    memory: "256Mi"
+    cpu: 200m
+    memory: 128Mi
   requests:
-    cpu: "150m"
-    memory: "128Mi"
+    cpu: 100m
+    memory: 64Mi
 
 livenessProbe:
+  enabled: true
   grpc:
     port: 3550
   initialDelaySeconds: 10
-  periodSeconds: 15
-  timeoutSeconds: 5
-  failureThreshold: 3
+  periodSeconds: 10
 
 readinessProbe:
+  enabled: true
   grpc:
     port: 3550
-  initialDelaySeconds: 5
+  initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
 
-serviceAccount:
-  # create: true
-  name: "productcatalogservice"
+env:
+  - name: PORT
+    value: "3550"
 
-rbac:
-  # create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["services", "endpoints"]
-      verbs: ["get", "list"]
-
-# configMap:
-  # create: true
-
+  - name: DISABLE_PROFILER
+    value: "1"
+  - name: DISABLE_TRACING
+    value: "1"
 autoscaling:
-  enabled: false
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
 
 podDisruptionBudget:
-  enabled: false
+  enabled: true
+  minAvailable: 1
+
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: dev

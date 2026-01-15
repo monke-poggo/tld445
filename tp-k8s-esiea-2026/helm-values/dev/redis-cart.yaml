@@ -1,7 +1,7 @@
 name: redis-cart
 replicaCount: 1
 image:
-  fullName: redis:alpine  # Image simple sans chemin
+  fullName: redis:alpine  # Image Redis simple
 service:
   type: ClusterIP
   port: 6379
@@ -24,4 +24,4 @@ podDisruptionBudget:
   minAvailable: 1
 labels:
   app.kubernetes.io/part-of: online-boutique
-  environment: prod
+  environment: dev

@@ -3,9 +3,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.name }}
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.name }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -15,79 +17,96 @@ spec:
     metadata:
       labels:
         app: {{ .Values.name }}
+        {{- with .Values.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.serviceAccount }}
       serviceAccountName: {{ .Values.name }}-sa
       {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       containers:
       - name: {{ .Values.name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- if .Values.image.fullName }}
+        image: "{{ .Values.image.fullName }}"
+        {{- else }}
+        image: "{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.image.tag }}"
+        {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
+          readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem }}
+          capabilities:
+            drop:
+              {{- toYaml .Values.securityContext.capabilities.drop | nindent 14 }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.service.targetPort }}
-        env:
-        - name: PORT
-          value: "{{ .Values.service.targetPort }}"
-        - name: DISABLE_PROFILER
-          value: "1"
-        - name: CART_SERVICE_ADDR
-          value: "cartservice:7070"
-        - name: PRODUCT_CATALOG_SERVICE_ADDR
-          value: "productcatalogservice:3550"
-        - name: PAYMENT_SERVICE_ADDR
-          value: "paymentservice:50051"
-        - name: RECOMMENDATION_SERVICE_ADDR
-          value: "recommendationservice:8080"
-        - name: SHIPPING_SERVICE_ADDR
-          value: "shippingservice:50051"
-        - name: CHECKOUT_SERVICE_ADDR
-          value: "checkoutservice:5050"
-        - name: AD_SERVICE_ADDR
-          value: "adservice:9555"
-        - name: EMAIL_SERVICE_ADDR
-          value: "emailservice:5000"
-        - name: CURRENCY_SERVICE_ADDR
-          value: "currencyservice:7000"
-        - name: REDIS_ADDR
-          value: "redis-cart:6379"
-        {{- if .Values.env }}
-        {{- toYaml .Values.env | nindent 8 }}
-        {{- end }}
-        {{- if .Values.livenessProbe }}
+          name: http
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           {{- if .Values.livenessProbe.grpc }}
           grpc:
             port: {{ .Values.livenessProbe.grpc.port }}
+            {{- if .Values.livenessProbe.grpc.service }}
+            service: {{ .Values.livenessProbe.grpc.service }}
+            {{- end }}
+          {{- else if .Values.livenessProbe.tcpSocket }}
+          tcpSocket:
+            port: {{ .Values.livenessProbe.tcpSocket.port }}
           {{- else if .Values.livenessProbe.httpGet }}
           httpGet:
             path: {{ .Values.livenessProbe.httpGet.path }}
             port: {{ .Values.livenessProbe.httpGet.port }}
-          {{- else if .Values.livenessProbe.tcpSocket }}
-          tcpSocket:
-            port: {{ .Values.livenessProbe.tcpSocket.port }}
           {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 10 }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 10 }}
+          {{- if .Values.livenessProbe.timeoutSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.livenessProbe.failureThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
         {{- end }}
-        {{- end }}
-        {{- if .Values.readinessProbe }}
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           {{- if .Values.readinessProbe.grpc }}
           grpc:
             port: {{ .Values.readinessProbe.grpc.port }}
+            {{- if .Values.readinessProbe.grpc.service }}
+            service: {{ .Values.readinessProbe.grpc.service }}
+            {{- end }}
+          {{- else if .Values.readinessProbe.tcpSocket }}
+          tcpSocket:
+            port: {{ .Values.readinessProbe.tcpSocket.port }}
           {{- else if .Values.readinessProbe.httpGet }}
           httpGet:
             path: {{ .Values.readinessProbe.httpGet.path }}
             port: {{ .Values.readinessProbe.httpGet.port }}
-          {{- else if .Values.readinessProbe.tcpSocket }}
-          tcpSocket:
-            port: {{ .Values.readinessProbe.tcpSocket.port }}
           {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 10 }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds | default 10 }}
+          {{- if .Values.readinessProbe.timeoutSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.readinessProbe.failureThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
         {{- end }}
+        {{- if .Values.env }}
+        env:
+        {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}

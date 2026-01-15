@@ -1,66 +1,48 @@
-replicaCount: 2
-
 name: recommendationservice
+replicaCount: 2
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice
-  tag: v0.10.4
-  pullPolicy: IfNotPresent
-
+  repository: gcr.io/google-samples/microservices-demo
+  tag: v0.10.1
 service:
   type: ClusterIP
   port: 8080
-
-env:
-  PORT: "8080"
-  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice-online-boutique-service:3550"
-  DISABLE_PROFILER: "1"
-  DISABLE_TRACING: "1"
-  DISABLE_DEBUGGER: "1"
-
+  targetPort: 8080
 resources:
   limits:
-    cpu: 500m
+    cpu: 300m
     memory: 512Mi
   requests:
-    cpu: 250m
-    memory: 256Mi
-
+    cpu: 100m
+    memory: 220Mi
 livenessProbe:
+  enabled: true
   grpc:
     port: 8080
-  initialDelaySeconds: 15
-  periodSeconds: 15
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-readinessProbe:
-  grpc:
-    port: 8080
-  initialDelaySeconds: 5
+  initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-serviceAccount:
-  create: true
-  name: "recommendationservice"
-
-rbac:
-  create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["services", "endpoints"]
-      verbs: ["get", "list"]
-
-configMap:
-  create: true
-
+readinessProbe:
+  enabled: true
+  grpc:
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 10
+env:
+  - name: PORT
+    value: "8080"
+  - name: PRODUCT_CATALOG_SERVICE_ADDR
+    value: "productcatalogservice:3550"
+  - name: DISABLE_PROFILER
+    value: "1"
+  - name: DISABLE_TRACING
+    value: "1"
 autoscaling:
   enabled: true
   minReplicas: 2
-  maxReplicas: 4
+  maxReplicas: 5
   targetCPUUtilizationPercentage: 75
-
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: prod

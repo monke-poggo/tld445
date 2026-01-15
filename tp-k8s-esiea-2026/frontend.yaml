@@ -1,5 +1,8 @@
+# Config frontend DEV
+
 name: frontend
-replicaCount: 3
+
+replicaCount: 1  # 1 seul pod en DEV
 
 image:
   repository: gcr.io/google-samples/microservices-demo
@@ -13,11 +16,11 @@ service:
 
 resources:
   limits:
-    cpu: 300m
-    memory: 256Mi
-  requests:
-    cpu: 150m
+    cpu: 200m
     memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
 
 livenessProbe:
   enabled: true
@@ -38,6 +41,8 @@ readinessProbe:
 env:
   - name: PORT
     value: "8080"
+  
+  # Adresses des autres services
   - name: PRODUCT_CATALOG_SERVICE_ADDR
     value: "productcatalogservice:3550"
   - name: CURRENCY_SERVICE_ADDR
@@ -54,6 +59,8 @@ env:
     value: "adservice:9555"
   - name: SHOPPING_ASSISTANT_SERVICE_ADDR
     value: "shoppingassistantservice:80"
+
+  # Désactiver les trucs Google Cloud
   - name: DISABLE_PROFILER
     value: "1"
   - name: DISABLE_TRACING
@@ -61,27 +68,34 @@ env:
 
 autoscaling:
   enabled: true
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 3
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
 
 podDisruptionBudget:
   enabled: true
-  minAvailable: 2
+  minAvailable: 1
 
 labels:
   app.kubernetes.io/part-of: online-boutique
-  environment: prod
+  environment: dev
 
-# Ingress configuration
+serviceAccount: true
+rbac:
+  enabled: true
+  rules:
+    - apiGroups: [""]
+      resources: ["pods", "services"]
+      verbs: ["get", "list"]
+
 ingress:
-  enabled: true  # Expose le frontend via Ingress (HTTP)
+  enabled: true
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
   hosts:
-    - host: prod.online-boutique.local
+    - host: dev.online-boutique.local
       paths:
         - path: /
           pathType: Prefix

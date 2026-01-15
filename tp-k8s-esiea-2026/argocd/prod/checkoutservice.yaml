@@ -1,15 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prod-checkoutservice
+  name: checkoutservice-prod
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
 spec:
   project: default
   source:
-    # repoURL: https://gitlab.esiea.fr/bastien.ceriani/k8s-gitops.git (GitLab ESIEA - pour le rendu final)
-    repoURL: https://github.com/monke-poggo/tld445.git
-    targetRevision: main
-    path: tp-k8s-esiea-2026/charts/online-boutique-service
+    repoURL: https://gitlab.esiea.fr/bastien.ceriani/k8s-gitops.git
+    targetRevision: XU_WILLIAM
+    path: tp-k8s-esiea-2026/POGGI_VICTOR/charts/online-boutique-service
     helm:
       valueFiles:
         - ../../helm-values/prod/checkoutservice.yaml

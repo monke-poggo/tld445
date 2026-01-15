@@ -1,106 +1,88 @@
-replicaCount: 2
-
 name: frontend
+replicaCount: 3
+
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
-  tag: v0.10.4
+  repository: gcr.io/google-samples/microservices-demo
+  tag: v0.10.1
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  port: 8080
-
-env:
-  PORT: "8080"
-  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice-online-boutique-service:3550"
-  CURRENCY_SERVICE_ADDR: "currencyservice-online-boutique-service:7000"
-  CART_SERVICE_ADDR: "cartservice-online-boutique-service:7070"
-  RECOMMENDATION_SERVICE_ADDR: "recommendationservice-online-boutique-service:8080"
-  SHIPPING_SERVICE_ADDR: "shippingservice-online-boutique-service:50051"
-  CHECKOUT_SERVICE_ADDR: "checkoutservice-online-boutique-service:5050"
-  AD_SERVICE_ADDR: "adservice-online-boutique-service:9555"
-  EMAIL_SERVICE_ADDR: "emailservice-online-boutique-service:5000"
-  SHOPPING_ASSISTANT_SERVICE_ADDR: "shoppingassistantservice-online-boutique-service:6060"
-  DISABLE_PROFILER: "1"
+  port: 80
+  targetPort: 8080
 
 resources:
   limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
+    cpu: 300m
     memory: 256Mi
+  requests:
+    cpu: 150m
+    memory: 128Mi
 
 livenessProbe:
+  enabled: true
   httpGet:
     path: /_healthz
     port: 8080
-  initialDelaySeconds: 15
-  periodSeconds: 20
-  timeoutSeconds: 5
-  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
 
 readinessProbe:
+  enabled: true
   httpGet:
     path: /_healthz
     port: 8080
-  initialDelaySeconds: 5
+  initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
 
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  hosts:
-    - host: online-boutique-prod.local
-      paths:
-        - path: /
-          pathType: Prefix
+env:
+  - name: PORT
+    value: "8080"
+  - name: PRODUCT_CATALOG_SERVICE_ADDR
+    value: "productcatalogservice:3550"
+  - name: CURRENCY_SERVICE_ADDR
+    value: "currencyservice:7000"
+  - name: CART_SERVICE_ADDR
+    value: "cartservice:7070"
+  - name: RECOMMENDATION_SERVICE_ADDR
+    value: "recommendationservice:8080"
+  - name: SHIPPING_SERVICE_ADDR
+    value: "shippingservice:50051"
+  - name: CHECKOUT_SERVICE_ADDR
+    value: "checkoutservice:5050"
+  - name: AD_SERVICE_ADDR
+    value: "adservice:9555"
+  - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+    value: "shoppingassistantservice:80"
+  - name: DISABLE_PROFILER
+    value: "1"
+  - name: DISABLE_TRACING
+    value: "1"
 
-serviceAccount:
-  create: true
-  name: "frontend"
-
-rbac:
-  create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["services", "endpoints"]
-      verbs: ["get", "list"]
-
-# Configuration ConfigMap
-configMap:
-  create: true
-
-# HPA activé en prod
 autoscaling:
   enabled: true
-  minReplicas: 2
-  maxReplicas: 5
+  minReplicas: 3
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
 
-# PDB pour assurer la disponibilité
 podDisruptionBudget:
   enabled: true
-  minAvailable: 1
+  minAvailable: 2
 
-# Ingress pour accès web
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: prod
+
 ingress:
   enabled: true
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - host: localhost
-      paths:
-        - path: /prod
-          pathType: Prefix
-    - host: online-boutique-prod.local
+    - host: prod.online-boutique.local
       paths:
         - path: /
           pathType: Prefix
+  tls: []
+

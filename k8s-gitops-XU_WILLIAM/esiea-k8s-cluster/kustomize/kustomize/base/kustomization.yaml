@@ -1,7 +1,0 @@
-resources:
-  - deployment.yaml
-  - service.yaml
-
-labels:
-  - pairs:
-      managed-by: kustomize

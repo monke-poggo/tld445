@@ -1,63 +1,46 @@
-replicaCount: 2
-
 name: emailservice
+replicaCount: 2
 image:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
-  tag: v0.10.4
-  pullPolicy: IfNotPresent
-
+  repository: gcr.io/google-samples/microservices-demo
+  tag: v0.10.1
 service:
   type: ClusterIP
   port: 5000
-
-env:
-  PORT: "5000"
-  DISABLE_PROFILER: "1"
-
+  targetPort: 8080
 resources:
   limits:
     cpu: 300m
     memory: 256Mi
   requests:
-    cpu: 150m
-    memory: 128Mi
-
+    cpu: 100m
+    memory: 64Mi
 livenessProbe:
+  enabled: true
   grpc:
-    port: 5000
-  initialDelaySeconds: 15
-  periodSeconds: 20
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-readinessProbe:
-  grpc:
-    port: 5000
-  initialDelaySeconds: 5
+    port: 8080
+  initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-serviceAccount:
-  create: true
-  name: "emailservice"
-
-rbac:
-  create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["services", "endpoints"]
-      verbs: ["get", "list"]
-
-configMap:
-  create: true
-
+readinessProbe:
+  enabled: true
+  grpc:
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 10
+env:
+  - name: PORT
+    value: "8080"
+  - name: DISABLE_PROFILER
+    value: "1"
+  - name: DISABLE_TRACING
+    value: "1"
 autoscaling:
   enabled: true
   minReplicas: 2
-  maxReplicas: 4
+  maxReplicas: 5
   targetCPUUtilizationPercentage: 75
-
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
+labels:
+  app.kubernetes.io/part-of: online-boutique
+  environment: prod
